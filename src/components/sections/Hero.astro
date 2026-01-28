@@ -1,0 +1,98 @@
+---
+import { urlFor } from "../../lib/sanity";
+import WhatsAppButton from "../WhatsAppButton.astro";
+import TrustSignals from "./TrustSignals.astro";
+
+interface Props {
+    data: {
+        title?: string;
+        subtitle?: string;
+        backgroundImage?: any;
+        ctaText?: string;
+        showTrust?: boolean;
+    };
+}
+
+const { data } = Astro.props;
+---
+
+<section
+    class="relative min-h-[70vh] flex items-center justify-center text-white overflow-hidden py-24"
+>
+    <div class="absolute inset-0 bg-slate-900/60 z-10"></div>
+    {
+        data.backgroundImage && (
+            <img
+                src={urlFor(data.backgroundImage)
+                    .width(1920)
+                    .height(1080)
+                    .auto("format")
+                    .quality(80)
+                    .url()}
+                alt={data.backgroundImage.alt || data.title}
+                class="absolute inset-0 w-full h-full object-cover z-0"
+                fetchpriority="high"
+                loading="eager"
+                decoding="async"
+            />
+        )
+    }
+
+    <div class="container mx-auto px-4 relative z-20 text-center max-w-4xl">
+        {
+            data.title && (
+                <h1 class="text-4xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in text-balance">
+                    {data.title}
+                </h1>
+            )
+        }
+        {
+            data.subtitle && (
+                <p class="text-xl md:text-2xl text-slate-100 leading-relaxed mb-10 max-w-3xl mx-auto opacity-90 text-balance">
+                    {data.subtitle}
+                </p>
+            )
+        }
+
+        <div class="flex flex-col items-center gap-6">
+            {
+                data.ctaText && (
+                    <WhatsAppButton
+                        text={data.ctaText}
+                        message={`Halo, saya ingin cek ketersediaan tanggal untuk layanan ${data.title}.`}
+                        className="text-lg px-10 py-5 shadow-2xl hover:scale-105 transition-transform bg-primary text-white font-bold rounded-full"
+                    />
+                )
+            }
+
+            {/* Visual Proof / Quick Win */}
+            <div
+                class="mt-4 bg-white/10 backdrop-blur-md px-6 py-2 rounded-full border border-white/20"
+            >
+                <TrustSignals
+                    data={{
+                        rating: "4.9",
+                        reviewCount: "120+",
+                        trustText: "Pasangan Bahagia",
+                    }}
+                />
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .animate-fade-in {
+        animation: fadeIn 1s ease-out;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

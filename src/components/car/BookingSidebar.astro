@@ -1,0 +1,51 @@
+---
+import { BookingForm } from "./BookingForm";
+
+interface Props {
+    carName: string;
+    price?: number;
+    priceWithDriver?: number;
+}
+
+const { carName, price, priceWithDriver } = Astro.props;
+---
+
+<div class="sticky top-24 hidden lg:block">
+    <div class="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+        <h3 class="text-xl font-bold text-primary mb-6">Pesan Sekarang</h3>
+
+        <!-- React Booking Form using Shadcn UI -->
+        <BookingForm
+            client:visible
+            carName={carName}
+            pricePerDay={price || 0}
+            priceWithDriver={priceWithDriver}
+        />
+    </div>
+
+    <!-- Trust Badges -->
+    <div
+        class="mt-6 flex items-center justify-around p-4 bg-[#1f3b61]/5 rounded-xl border border-[#1f3b61]/10"
+    >
+        <div class="flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined text-[#1f3b61] !text-lg"
+                >verified_user</span
+            >
+            <span class="text-[9px] font-bold text-[#1f3b61]">Asuransi</span>
+        </div>
+        <div class="w-px h-8 bg-[#1f3b61]/10"></div>
+        <div class="flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined text-[#1f3b61] !text-lg"
+                >support_agent</span
+            >
+            <span class="text-[9px] font-bold text-[#1f3b61]">Bantuan 24h</span>
+        </div>
+        <div class="w-px h-8 bg-[#1f3b61]/10"></div>
+        <div class="flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined text-[#1f3b61] !text-lg"
+                >clean_hands</span
+            >
+            <span class="text-[9px] font-bold text-[#1f3b61]">Disinfektan</span>
+        </div>
+    </div>
+</div>

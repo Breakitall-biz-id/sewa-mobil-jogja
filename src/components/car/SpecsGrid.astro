@@ -1,0 +1,57 @@
+---
+interface Props {
+    capacity: number;
+    luggage?: string | number;
+    fuel?: string;
+    transmission?: string;
+}
+
+const { capacity, luggage, fuel, transmission } = Astro.props;
+---
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2 px-5 lg:px-0">
+    <div class="flex items-center gap-3 p-3 bg-[#f6f7f8] rounded-xl">
+        <span class="material-symbols-outlined text-primary !text-2xl"
+            >group</span
+        >
+        <div>
+            <p class="text-[10px] text-[#6a7381] font-bold uppercase">
+                Kapasitas
+            </p>
+            <p class="text-sm font-bold text-primary">{capacity} Orang</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 bg-[#f6f7f8] rounded-xl">
+        <span class="material-symbols-outlined text-primary !text-2xl"
+            >luggage</span
+        >
+        <div>
+            <p class="text-[10px] text-[#6a7381] font-bold uppercase">Bagasi</p>
+            <p class="text-sm font-bold text-primary">
+                {luggage || "Standard"}
+            </p>
+        </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 bg-[#f6f7f8] rounded-xl">
+        <span class="material-symbols-outlined text-primary !text-2xl"
+            >local_gas_station</span
+        >
+        <div>
+            <p class="text-[10px] text-[#6a7381] font-bold uppercase">
+                Mesin/BBM
+            </p>
+            <p class="text-sm font-bold text-primary">{fuel || "Bensin"}</p>
+        </div>
+    </div>
+    <div class="flex items-center gap-3 p-3 bg-[#f6f7f8] rounded-xl">
+        <span class="material-symbols-outlined text-primary !text-2xl"
+            >ac_unit</span
+        >
+        <div>
+            <p class="text-[10px] text-[#6a7381] font-bold uppercase">
+                Pendingin
+            </p>
+            <p class="text-sm font-bold text-primary">AC Double</p>
+        </div>
+    </div>
+</div>

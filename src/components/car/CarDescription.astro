@@ -1,0 +1,94 @@
+---
+import { PortableText } from "astro-portabletext";
+
+interface Props {
+    description?: any;
+    includes?: string[];
+    conditions?: string[];
+}
+
+const { description, includes, conditions } = Astro.props;
+---
+
+<!-- Unified Card Layout for Both Mobile & Desktop (Replaces Accordions) -->
+<div class="space-y-6 lg:space-y-8 pb-8 lg:pb-0 px-5 lg:px-0">
+    <!-- About Section -->
+    <section
+        class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100"
+    >
+        <h2 class="text-xl font-bold text-primary mb-4">Tentang Mobil Ini</h2>
+        <div class="prose prose-sm max-w-none text-[#6a7381] leading-relaxed">
+            {
+                description ? (
+                    <PortableText value={description} />
+                ) : (
+                    <p>
+                        Deskripsi belum tersedia untuk armada ini. Hubungi kami
+                        untuk informasi lebih lanjut.
+                    </p>
+                )
+            }
+        </div>
+    </section>
+
+    <!-- Includes & Conditions Grid -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Includes -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <h3 class="font-bold text-primary mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-green-500"
+                    >task_alt</span
+                >
+                Apa yang Termasuk
+            </h3>
+            <ul class="space-y-3">
+                {
+                    includes && includes.length > 0 ? (
+                        includes.map((item) => (
+                            <li class="flex items-start gap-3 text-sm text-[#6a7381]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                                {item}
+                            </li>
+                        ))
+                    ) : (
+                        <>
+                            <li class="flex items-start gap-3 text-sm text-[#6a7381]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                                Unit Mobil Bersih & Terawat
+                            </li>
+                        </>
+                    )
+                }
+            </ul>
+        </div>
+
+        <!-- Conditions -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <h3 class="font-bold text-primary mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-amber-500"
+                    >info</span
+                >
+                Syarat & Ketentuan
+            </h3>
+            <ul class="space-y-3">
+                {
+                    conditions && conditions.length > 0 ? (
+                        conditions.map((item) => (
+                            <li class="flex items-start gap-3 text-sm text-[#6a7381]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-secondary mt-2 flex-shrink-0" />
+                                {item}
+                            </li>
+                        ))
+                    ) : (
+                        <>
+                            <li class="flex items-start gap-3 text-sm text-[#6a7381]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-secondary mt-2 flex-shrink-0" />
+                                Durasi sewa per hari
+                            </li>
+                        </>
+                    )
+                }
+            </ul>
+        </div>
+    </section>
+</div>

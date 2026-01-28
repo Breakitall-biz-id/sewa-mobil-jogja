@@ -1,0 +1,108 @@
+---
+/**
+ * Testimonials Section
+ * Customer reviews with Google Maps integration
+ */
+import { Image } from "astro:assets";
+
+interface SanityTestimonial {
+  _id: string;
+  name: string;
+  source?: string;
+  review: string;
+  avatar?: { asset: { _ref: string } };
+}
+
+interface Props {
+  lang?: "id" | "en";
+}
+
+import { getAllTestimonials, urlFor } from "../lib/sanity";
+
+const { lang = "id" } = Astro.props;
+
+const t =
+  lang === "id"
+    ? {
+        title: "Apa Kata Mereka?",
+        subtitle: "Berdasarkan ulasan jujur dari pelanggan kami di Google Maps",
+      }
+    : {
+        title: "What They Say?",
+        subtitle: "Based on honest reviews from our customers on Google Maps",
+      };
+
+// Fetch testimonials from Sanity
+const sanityTestimonials = (await getAllTestimonials()) as SanityTestimonial[];
+const testimonials = sanityTestimonials.map((testimonial) => ({
+  id: testimonial._id,
+  name: testimonial.name,
+  location:
+    testimonial.source === "google"
+      ? "via Google Maps"
+      : testimonial.source === "whatsapp"
+        ? "via WhatsApp"
+        : "",
+  review: testimonial.review,
+  avatar: testimonial.avatar
+    ? urlFor(testimonial.avatar).width(100).height(100).url()
+    : `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=random&size=100`,
+}));
+---
+
+<section class="section-padding bg-[#1f3b61] relative overflow-hidden">
+  <!-- Decoration Pattern -->
+  <div
+    class="absolute inset-0 opacity-10"
+    style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 30px 30px;"
+  >
+  </div>
+
+  <div class="container-main relative z-10">
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-white mb-4">{t.title}</h2>
+
+      <!-- Stars -->
+      <div class="flex justify-center gap-1 mb-4">
+        {
+          [1, 2, 3, 4, 5].map(() => (
+            <span class="material-symbols-outlined text-[#d97706] filled">
+              star
+            </span>
+          ))
+        }
+      </div>
+
+      <p class="text-white/80">{t.subtitle}</p>
+    </div>
+
+    <!-- Testimonial Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {
+        testimonials.map((testimonial) => (
+          <article class="bg-white p-6 rounded-xl shadow-lg h-full flex flex-col">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
+                <Image
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
+                  width={100}
+                  height={100}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900">{testimonial.name}</h4>
+                <p class="text-xs text-slate-500">{testimonial.location}</p>
+              </div>
+            </div>
+            <p class="text-slate-600 text-sm leading-relaxed flex-grow">
+              "{testimonial.review}"
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

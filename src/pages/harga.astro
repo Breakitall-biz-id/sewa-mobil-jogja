@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { getAllCars } from "../lib/sanity";
+
+const lang = "id";
+const cars = await getAllCars();
+
+const seo = {
+    title: "Daftar Harga Sewa Mobil Jogja",
+    description: "Daftar harga sewa mobil murah di Jogja.",
+};
+---
+
+<BaseLayout title={seo.title} description={seo.description} lang={lang}>
+    <Header lang={lang} />
+    <main class="max-w-7xl mx-auto px-4 py-12 min-h-screen">
+        <h1 class="text-3xl font-bold mb-8 text-center">
+            Daftar Harga Sewa Mobil
+        </h1>
+        <div class="overflow-x-auto">
+            <table
+                class="min-w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            >
+                <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-700 text-left">
+                        <th class="p-4 border-b">Unit</th>
+                        <th class="p-4 border-b">Lepas Kunci (24 Jam)</th>
+                        <th class="p-4 border-b">Dengan Supir (12 Jam)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        cars.map((car: any) => (
+                            <tr class="border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                <td class="p-4 font-medium">{car.name}</td>
+                                <td class="p-4">
+                                    Rp{" "}
+                                    {car.pricePerDay
+                                        ? car.pricePerDay.toLocaleString(
+                                              "id-ID",
+                                          )
+                                        : "-"}
+                                </td>
+                                <td class="p-4">
+                                    Rp{" "}
+                                    {car.priceWithDriver
+                                        ? car.priceWithDriver.toLocaleString(
+                                              "id-ID",
+                                          )
+                                        : "-"}
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <Footer lang={lang} />
+</BaseLayout>

@@ -1,0 +1,84 @@
+---
+/**
+ * BlogCard Component
+ * Reusable blog post card for listing pages
+ */
+interface Props {
+    slug: string;
+    title: string;
+    excerpt: string;
+    image: string;
+    category: string;
+    readTime: number;
+    author: {
+        name: string;
+        avatar: string;
+    };
+    date: string;
+    lang?: "id" | "en";
+}
+
+const {
+    slug,
+    title,
+    excerpt,
+    image,
+    category,
+    readTime,
+    author,
+    date,
+    lang = "id",
+} = Astro.props;
+
+const readTimeLabel = lang === "id" ? "menit baca" : "min read";
+---
+
+<article
+    class="flex flex-col bg-white rounded-xl overflow-hidden border border-[#f1f2f4] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+>
+    <a href={`/blog/${slug}`} class="contents">
+        <div
+            class="aspect-video w-full bg-gray-200 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+            style={`background-image: url("${image}");`}
+        >
+        </div>
+
+        <div class="p-6 flex flex-col flex-1">
+            <div class="flex items-center justify-between mb-3">
+                <span
+                    class="text-[#F59E0B] text-xs font-bold uppercase tracking-wider"
+                    >{category}</span
+                >
+                <span class="text-gray-400 text-xs flex items-center gap-1"
+                    >{readTime} {readTimeLabel}</span
+                >
+            </div>
+
+            <h3
+                class="text-[#1f3b61] text-xl font-bold leading-tight mb-2 group-hover:text-[#F59E0B] transition-colors line-clamp-2"
+            >
+                {title}
+            </h3>
+
+            <p class="text-[#6a7381] text-sm leading-relaxed mb-6 line-clamp-2">
+                {excerpt}
+            </p>
+
+            <div
+                class="mt-auto flex items-center gap-2 border-t border-[#f1f2f4] pt-4"
+            >
+                <div
+                    class="size-8 rounded-full bg-gray-200 bg-cover bg-center"
+                    style={`background-image: url("${author.avatar}");`}
+                >
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[#121416] text-xs font-bold"
+                        >{author.name}</span
+                    >
+                    <span class="text-gray-400 text-[10px]">{date}</span>
+                </div>
+            </div>
+        </div>
+    </a>
+</article>

@@ -1,0 +1,102 @@
+---
+import { sanityClient, urlFor } from "../../lib/sanity";
+import ArmadaCard from "../ArmadaCard.astro";
+
+interface Props {
+    data: {
+        title?: string;
+        description?: string;
+        includedItems?: string[];
+        cars?: any[];
+    };
+}
+
+const { data } = Astro.props;
+
+// Fetch full car details for the referenced cars
+const carIds = data.cars?.map((ref: any) => ref._ref) || [];
+const cars =
+    carIds.length > 0
+        ? await sanityClient.fetch(`*[_type == "car" && _id in $ids]`, {
+              ids: carIds,
+          })
+        : [];
+---
+
+{
+    cars.length > 0 && (
+        <section class="py-20 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+            <div class="container mx-auto px-4">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    {data.title && (
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                            {data.title}
+                        </h2>
+                    )}
+                    {data.description && (
+                        <p class="text-lg text-slate-600 dark:text-slate-400 mb-8">
+                            {data.description}
+                        </p>
+                    )}
+
+                    {/* Price Transparency: What's Included */}
+                    {data.includedItems && data.includedItems.length > 0 && (
+                        <div class="flex flex-wrap justify-center gap-4 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                            {data.includedItems.map((item) => (
+                                <span class="flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-900/30 px-4 py-2 rounded-full border border-emerald-100 dark:border-emerald-800">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="3"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-check"
+                                    >
+                                        <path d="M20 6 9 17l-5-5" />
+                                    </svg>
+                                    {item}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {cars.map((car: any) => (
+                        <div class="relative group">
+                            {/* Urgency Badge */}
+                            <div class="absolute top-4 left-4 z-20 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider animate-pulse">
+                                Unit Terbatas
+                            </div>
+
+                            <ArmadaCard
+                                id={car.slug?.current}
+                                name={car.name}
+                                year={new Date().getFullYear()}
+                                transmission="Matic"
+                                seats={car.capacity || 5}
+                                luggage={car.luggage || 2}
+                                features={car.features || []}
+                                price={car.pricePerDay || 0}
+                                image={
+                                    car.image
+                                        ? urlFor(car.image)
+                                              .width(600)
+                                              .height(400)
+                                              .url()
+                                        : ""
+                                }
+                                available={true}
+                                lang="id"
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    )
+}

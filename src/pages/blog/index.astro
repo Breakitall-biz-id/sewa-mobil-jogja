@@ -1,0 +1,161 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import WhatsAppButton from "../../components/WhatsAppButton.astro";
+import BlogHero from "../../components/blog/BlogHero.astro";
+import BlogFeaturedPost from "../../components/blog/BlogFeaturedPost.astro";
+import BlogArticleCard from "../../components/blog/BlogArticleCard.astro";
+import BlogSidebar from "../../components/blog/BlogSidebar.astro";
+import BlogPagination from "../../components/blog/BlogPagination.astro";
+import { getAllPosts, getAllCategories, urlFor } from "../../lib/sanity";
+import type { SanityPost } from "../../types";
+
+const lang = "id";
+
+const seo = {
+    title: "Blog & Tips Wisata Jogja",
+    description:
+        "Temukan rekomendasi tempat wisata tersembunyi, tips sewa mobil, dan panduan kuliner terbaik di Yogyakarta dari SMJ Trans Jogja.",
+};
+
+const sanityPosts = await getAllPosts();
+const sanityCategories = await getAllCategories();
+
+const allPosts = sanityPosts.map((post) => ({
+    slug: post.slug?.current || post._id,
+    title: post.title,
+    excerpt: post.excerpt || "",
+    image: post.featuredImage
+        ? urlFor(post.featuredImage).width(600).height(450).url()
+        : "",
+    date: post.publishedAt
+        ? new Date(post.publishedAt).toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+          })
+        : "",
+    readTime: post.readTime ? `${post.readTime} min` : "5 min",
+    category: post.category?.title || "Umum",
+    categorySlug: post.category?.slug?.current,
+    tags: post.tags || [],
+}));
+
+const featuredPost =
+    allPosts.length > 0
+        ? allPosts[0]
+        : {
+              slug: "coming-soon",
+              title: "Artikel Segera Hadir",
+              excerpt:
+                  "Nantikan artikel menarik seputar wisata Jogja dan tips rental mobil.",
+              image: "",
+              date: "",
+              readTime: "",
+              category: "Umum",
+              tags: [],
+          };
+
+const blogPosts = allPosts.slice(1);
+
+// Calculate category counts
+const categories = sanityCategories
+    .map((cat) => ({
+        slug: cat.slug.current,
+        name: cat.title,
+        count: sanityPosts.filter(
+            (p) => p.category?.slug?.current === cat.slug.current,
+        ).length,
+    }))
+    .filter((c) => c.count > 0)
+    .sort((a, b) => b.count - a.count);
+
+// Extract unique tags
+const allTags = sanityPosts.flatMap((p) => p.tags || []);
+const uniqueTags = [...new Set(allTags)].slice(0, 10); // Limit to top 10 or just 10 random
+const tags = uniqueTags;
+---
+
+<BaseLayout
+    title={seo.title}
+    description={seo.description}
+    image={featuredPost.image || "/og-image.jpg"}
+    lang={lang}
+>
+    <Header lang={lang} />
+
+    <main class="flex-1">
+        <!-- Hero Section -->
+        <BlogHero />
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <!-- Featured Post -->
+            <BlogFeaturedPost post={featuredPost} />
+
+            <!-- Two Column Layout: Articles + Sidebar -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Articles Column -->
+                <div class="lg:col-span-9">
+                    <!-- Section Header -->
+                    <div class="flex items-center justify-between mb-8">
+                        <h2
+                            class="text-2xl font-bold text-slate-900 dark:text-white"
+                        >
+                            Artikel Terbaru
+                        </h2>
+                        <div class="flex gap-2">
+                            <button
+                                class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500"
+                                aria-label="Grid view"
+                            >
+                                <span class="material-symbols-outlined"
+                                    >grid_view</span
+                                >
+                            </button>
+                            <button
+                                class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400"
+                                aria-label="List view"
+                            >
+                                <span class="material-symbols-outlined"
+                                    >view_list</span
+                                >
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Article Grid -->
+                    {
+                        blogPosts.length > 0 ? (
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {blogPosts.map((post) => (
+                                    <BlogArticleCard post={post} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div class="text-center py-12 text-slate-500">
+                                <p>
+                                    Belum ada artikel. Nantikan konten menarik
+                                    segera!
+                                </p>
+                            </div>
+                        )
+                    }
+
+                    <!-- Pagination -->
+                    <BlogPagination
+                        currentPage={1}
+                        totalPages={Math.ceil(blogPosts.length / 6) || 1}
+                    />
+                </div>
+
+                <!-- Sidebar -->
+                <BlogSidebar categories={categories} tags={tags} />
+            </div>
+        </div>
+    </main>
+
+    <Footer lang={lang} />
+    <WhatsAppButton />
+</BaseLayout>

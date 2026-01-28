@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const lang = "id";
+
+const seo = {
+    title: "Tentang Kami",
+    description: "Tentang SMJ Trans Jogja.",
+};
+---
+
+<BaseLayout title={seo.title} description={seo.description} lang={lang}>
+    <Header lang={lang} />
+    <main class="max-w-4xl mx-auto px-4 py-12 min-h-screen">
+        <h1 class="text-3xl font-bold mb-6">Tentang Kami</h1>
+        <p class="prose">
+            SMJ Trans Jogja adalah penyedia jasa sewa mobil terpercaya di
+            Yogyakarta sejak 2015.
+        </p>
+    </main>
+    <Footer lang={lang} />
+</BaseLayout>

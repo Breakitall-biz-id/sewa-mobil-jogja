@@ -1,0 +1,67 @@
+---
+interface Props {
+    data: {
+        title?: string;
+        description?: string;
+    };
+}
+
+const { data } = Astro.props;
+
+// Default features if none specified, or we could add them to Sanity
+const features = [
+    {
+        title: "Driver Profesional",
+        desc: "Sopir berpengalaman, ramah, dan hafal rute wisata.",
+        icon: "👨‍✈️",
+    },
+    {
+        title: "Unit Terawat",
+        desc: "Mobil selalu dalam kondisi prima, bersih, dan wangi.",
+        icon: "✨",
+    },
+    {
+        title: "Tepat Waktu",
+        desc: "Jaminan penjemputan tepat waktu sesuai jadwal.",
+        icon: "⏰",
+    },
+    {
+        title: "Harga Transparan",
+        desc: "Harga jujur tanpa biaya tersembunyi.",
+        icon: "💰",
+    },
+];
+---
+
+<section class="py-20 bg-slate-50 dark:bg-slate-900/50">
+    <div class="container mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            {
+                data.title && (
+                    <h2 class="text-3xl font-bold mb-4">{data.title}</h2>
+                )
+            }
+            {
+                data.description && (
+                    <p class="text-lg text-slate-600 dark:text-slate-400">
+                        {data.description}
+                    </p>
+                )
+            }
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {
+                features.map((item) => (
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+                        <div class="text-4xl mb-4">{item.icon}</div>
+                        <h3 class="text-xl font-bold mb-2">{item.title}</h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            {item.desc}
+                        </p>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>

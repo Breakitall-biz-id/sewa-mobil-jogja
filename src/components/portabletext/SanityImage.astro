@@ -1,0 +1,51 @@
+---
+import { urlFor } from "../../lib/sanity";
+import { Image } from "astro:assets";
+
+const { node } = Astro.props;
+
+const pattern = /^image-([a-f\d]+)-(\d+)x(\d+)-(\w+)$/;
+const decodeAssetId = (id: string) => {
+    const match = pattern.exec(id);
+    if (!match) {
+        return null;
+    }
+    const [_, assetId, width, height, format] = match;
+    return {
+        assetId,
+        width: parseInt(width),
+        height: parseInt(height),
+        format,
+    };
+};
+
+const dimensions = node?.asset?._ref ? decodeAssetId(node.asset._ref) : null;
+const width = dimensions?.width || 800;
+const height = dimensions?.height || 600;
+
+// Optimize: Request reasonably sized image from Sanity (max 1200px width) to prevent fetching 4K originals
+// Astro's <Image /> will handle further responsive resizing
+const imageUrl = node?.asset
+    ? urlFor(node).width(Math.min(width, 1200)).fit("max").auto("format").url()
+    : "";
+---
+
+{
+    imageUrl && (
+        <figure class="my-8 rounded-xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-700">
+            <Image
+                src={imageUrl}
+                alt={node.alt || "Blog image"}
+                width={width}
+                height={height}
+                class="w-full h-auto object-cover"
+                loading="lazy"
+            />
+            {node.caption && (
+                <figcaption class="bg-slate-50 dark:bg-slate-800 p-3 text-sm text-center text-slate-500 italic">
+                    {node.caption}
+                </figcaption>
+            )}
+        </figure>
+    )
+}

@@ -1,0 +1,96 @@
+---
+/**
+ * Location & CTA Section
+ * Displays pickup locations with map
+ */
+import { Image } from "astro:assets";
+import mapImage from "../assets/images/map-yogya.webp";
+
+interface Props {
+  lang?: "id" | "en";
+}
+
+const { lang = "id" } = Astro.props;
+
+const t =
+  lang === "id"
+    ? {
+        title: "Lokasi Penjemputan Fleksibel",
+        subtitle:
+          "Kami melayani pengantaran dan penjemputan unit di berbagai lokasi strategis di Yogyakarta untuk kemudahan Anda.",
+        mapBtn: "Lihat Lokasi di Maps",
+        garageLabel: "Garasi SMJ Trans",
+      }
+    : {
+        title: "Flexible Pickup Locations",
+        subtitle:
+          "We serve delivery and pickup at various strategic locations in Yogyakarta for your convenience.",
+        mapBtn: "View Location on Maps",
+        garageLabel: "SMJ Trans Garage",
+      };
+
+const locations = [
+  {
+    icon: "flight_land",
+    text: "Bandara YIA (Yogyakarta International Airport)",
+  },
+  { icon: "train", text: "Stasiun Tugu & Lempuyangan" },
+  { icon: "hotel", text: "Hotel / Penginapan Area Kota Jogja" },
+];
+---
+
+<section class="section-padding bg-white">
+  <div class="container-main">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Content -->
+      <div>
+        <h2 class="text-3xl font-bold text-slate-900 mb-6">{t.title}</h2>
+        <p class="text-slate-500 mb-8">{t.subtitle}</p>
+
+        <ul class="space-y-4 mb-8">
+          {
+            locations.map((loc) => (
+              <li class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-[#d97706]">
+                  {loc.icon}
+                </span>
+                <span class="text-slate-700 font-medium">{loc.text}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <a
+          href="https://maps.google.com/?q=SMJ+Trans+Jogja"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 bg-[#1f3b61] hover:bg-[#1f3b61]/90 text-white px-6 py-3 rounded-lg font-bold transition-colors"
+        >
+          <span class="material-symbols-outlined">pin_drop</span>
+          {t.mapBtn}
+        </a>
+      </div>
+
+      <!-- Map -->
+      <div class="rounded-2xl overflow-hidden shadow-lg h-[400px] relative">
+        <Image
+          src={mapImage}
+          alt="Map of Yogyakarta"
+          width={800}
+          height={400}
+          class="w-full h-full object-cover"
+        />
+        <div
+          class="absolute inset-0 bg-black/10 flex items-center justify-center"
+        >
+          <div
+            class="bg-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-bounce-subtle"
+          >
+            <span class="material-symbols-outlined text-red-500">place</span>
+            <span class="font-bold text-slate-900">{t.garageLabel}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

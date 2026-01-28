@@ -1,0 +1,206 @@
+---
+/**
+ * Footer Component
+ * Site footer with brand, links, contact, and payment methods
+ */
+import { getSiteSettings } from "../lib/sanity";
+
+interface Props {
+  lang?: "id" | "en";
+}
+
+const { lang = "id" } = Astro.props;
+
+// Fetch site settings from Sanity
+const settings = await getSiteSettings();
+
+const t =
+  lang === "id"
+    ? {
+        brandDesc:
+          settings?.tagline ||
+          "Penyedia jasa sewa mobil terpercaya di Yogyakarta sejak 2015. Melayani sewa lepas kunci maupun dengan supir.",
+        quickLinks: "Menu Cepat",
+        contact: "Kontak Kami",
+        payment: "Metode Pembayaran",
+        copyright: `© ${new Date().getFullYear()} ${settings?.siteName || "SMJ Trans Jogja"}. All rights reserved.`,
+        privacy: "Privacy Policy",
+        terms: "Terms of Service",
+      }
+    : {
+        brandDesc:
+          "Trusted car rental provider in Yogyakarta since 2015. Serving self-drive and with driver rentals.",
+        quickLinks: "Quick Links",
+        contact: "Contact Us",
+        payment: "Payment Methods",
+        copyright: `© ${new Date().getFullYear()} ${settings?.siteName || "SMJ Trans Jogja"}. All rights reserved.`,
+        privacy: "Privacy Policy",
+        terms: "Terms of Service",
+      };
+
+const quickLinks =
+  lang === "id"
+    ? [
+        { href: "/tentang", label: "Tentang Kami" },
+        { href: "/harga", label: "Daftar Harga" },
+        { href: "/syarat-ketentuan", label: "Syarat & Ketentuan" },
+        { href: "/faq", label: "FAQ" },
+        { href: "/blog", label: "Blog Wisata" },
+      ]
+    : [
+        { href: "/en/about", label: "About Us" },
+        { href: "/en/pricing", label: "Price List" },
+        { href: "/en/terms", label: "Terms & Conditions" },
+        { href: "/en/faq", label: "FAQ" },
+        { href: "/en/blog", label: "Travel Blog" },
+      ];
+
+const contactInfo = [
+  {
+    icon: "location_on",
+    text:
+      settings?.address ||
+      "Jl. Kaliurang Km 12, Ngaglik, Sleman, Yogyakarta 55581",
+  },
+  { icon: "call", text: settings?.phone || "+62 881 2725 610" },
+  { icon: "mail", text: settings?.email || "info@sewamobiljogjaku.id" },
+];
+
+const socialLinks = [
+  {
+    href:
+      settings?.socialMedia?.instagram ||
+      "https://instagram.com/sewamobiljogjaku",
+    label: "IG",
+    ariaLabel: "Follow us on Instagram",
+  },
+  {
+    href:
+      settings?.socialMedia?.facebook ||
+      "https://facebook.com/sewamobiljogjaku",
+    label: "FB",
+    ariaLabel: "Follow us on Facebook",
+  },
+  {
+    href:
+      settings?.socialMedia?.tiktok || "https://tiktok.com/@sewamobiljogjaku",
+    label: "TT",
+    ariaLabel: "Follow us on TikTok",
+  },
+];
+
+const siteName = settings?.siteName || "SMJ Trans Jogja";
+---
+
+<footer class="bg-[#1f3b61] text-white pt-16 pb-8">
+  <div class="container-main">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+      <!-- Brand -->
+      <div>
+        <a
+          href={lang === "id" ? "/" : "/en"}
+          class="flex items-center gap-2 mb-6"
+        >
+          <div
+            class="flex items-center justify-center w-8 h-8 rounded bg-white text-[#1f3b61]"
+          >
+            <span class="material-symbols-outlined text-sm">directions_car</span
+            >
+          </div>
+          <h3 class="text-xl font-bold">{siteName}</h3>
+        </a>
+        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+          {t.brandDesc}
+        </p>
+        <div class="flex gap-4">
+          {
+            socialLinks.map((social) => (
+              <a
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#d97706] transition-colors text-xs font-bold"
+                aria-label={social.ariaLabel}
+              >
+                {social.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="font-bold text-lg mb-6">{t.quickLinks}</h4>
+        <ul class="space-y-3 text-sm text-slate-300">
+          {
+            quickLinks.map((link) => (
+              <li>
+                <a href={link.href} class="hover:text-white transition-colors">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h4 class="font-bold text-lg mb-6">{t.contact}</h4>
+        <ul class="space-y-4 text-sm text-slate-300">
+          {
+            contactInfo.map((info) => (
+              <li class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-[#d97706] mt-0.5">
+                  {info.icon}
+                </span>
+                <span>{info.text}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Payment Methods -->
+      <div>
+        <h4 class="font-bold text-lg mb-6">{t.payment}</h4>
+        <div class="grid grid-cols-3 gap-3">
+          <div
+            class="bg-white rounded h-8 w-full flex items-center justify-center text-xs font-bold text-slate-700"
+          >
+            BCA
+          </div>
+          <div
+            class="bg-white rounded h-8 w-full flex items-center justify-center text-xs font-bold text-slate-700"
+          >
+            BRI
+          </div>
+          <div
+            class="bg-white rounded h-8 w-full flex items-center justify-center text-xs font-bold text-slate-700"
+          >
+            Mandiri
+          </div>
+          <div
+            class="bg-white rounded h-8 w-full flex items-center justify-center text-xs font-bold text-slate-700"
+          >
+            Cash
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div
+      class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4"
+    >
+      <p class="text-sm text-slate-400 text-center md:text-left">
+        {t.copyright}
+      </p>
+      <div class="flex gap-6 text-sm text-slate-400">
+        <a href="/privacy" class="hover:text-white">{t.privacy}</a>
+        <a href="/terms" class="hover:text-white">{t.terms}</a>
+      </div>
+    </div>
+  </div>
+</footer>

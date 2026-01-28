@@ -1,0 +1,119 @@
+{
+    "site": {
+        "name": "Sewa Mobil Jogja",
+        "tagline": "Rental Mobil Jogja Terpercaya - SMJ Trans Jogja"
+    },
+    "nav": {
+        "home": "Beranda",
+        "fleet": "Armada",
+        "blog": "Blog",
+        "testimonials": "Testimoni",
+        "contact": "Kontak",
+        "booking": "Booking"
+    },
+    "hero": {
+        "title": "Sewa Mobil Jogja Terpercaya",
+        "subtitle": "Rental mobil dengan armada terawat, harga transparan, dan layanan 24/7",
+        "cta": "Cari Mobil",
+        "ctaBooking": "Booking Sekarang"
+    },
+    "usp": {
+        "title": "Mengapa Memilih Kami?",
+        "items": [
+            {
+                "icon": "car",
+                "title": "Armada Terawat",
+                "description": "Semua unit diservis rutin untuk performa optimal"
+            },
+            {
+                "icon": "money",
+                "title": "Harga Transparan",
+                "description": "Tanpa biaya tersembunyi, harga jelas di awal"
+            },
+            {
+                "icon": "driver",
+                "title": "Sopir Berpengalaman",
+                "description": "Ramah dan menguasai semua rute wisata"
+            },
+            {
+                "icon": "clock",
+                "title": "Layanan 24 Jam",
+                "description": "Siap kapanpun Anda butuhkan"
+            }
+        ]
+    },
+    "fleet": {
+        "title": "Armada Kami",
+        "viewAll": "Lihat Semua Armada",
+        "categories": {
+            "all": "Semua",
+            "city-car": "City Car",
+            "mpv": "Family MPV",
+            "premium": "Premium",
+            "minibus": "Minibus"
+        },
+        "perDay": "/hari",
+        "capacity": "penumpang",
+        "luggage": "koper",
+        "bookNow": "Pesan Sekarang",
+        "viewDetails": "Lihat Detail"
+    },
+    "testimonials": {
+        "title": "Apa Kata Pelanggan Kami",
+        "subtitle": "Ulasan dari pelanggan yang sudah menggunakan layanan kami",
+        "verifiedReview": "Ulasan Terverifikasi Google",
+        "viewAll": "Lihat Semua Ulasan"
+    },
+    "pickup": {
+        "title": "Lokasi Penjemputan",
+        "subtitle": "Kami siap menjemput Anda di berbagai lokasi",
+        "locations": [
+            "Bandara YIA (Yogyakarta International Airport)",
+            "Stasiun Tugu",
+            "Stasiun Lempuyangan",
+            "Antar-jemput Hotel"
+        ]
+    },
+    "cta": {
+        "title": "Siap Untuk Perjalanan Anda?",
+        "subtitle": "Hubungi kami sekarang untuk mendapatkan penawaran terbaik",
+        "button": "Hubungi via WhatsApp"
+    },
+    "booking": {
+        "title": "Form Reservasi",
+        "subtitle": "Isi form berikut dan kami akan menghubungi Anda",
+        "fields": {
+            "carType": "Tipe Mobil",
+            "startDate": "Tanggal Mulai",
+            "endDate": "Tanggal Selesai",
+            "pickupTime": "Jam Jemput",
+            "pickupLocation": "Lokasi Jemput",
+            "destination": "Tujuan",
+            "name": "Nama Lengkap",
+            "phone": "No. WhatsApp",
+            "email": "Email (opsional)",
+            "notes": "Catatan Tambahan"
+        },
+        "terms": "Saya setuju dengan syarat & ketentuan",
+        "submit": "Kirim ke WhatsApp"
+    },
+    "footer": {
+        "description": "Rental mobil terpercaya di Yogyakarta dengan armada terawat dan harga kompetitif.",
+        "quickLinks": "Link Cepat",
+        "ourFleet": "Armada Kami",
+        "contact": "Kontak",
+        "operatingHours": "Jam Operasional",
+        "hours": "24 Jam (Setiap Hari)",
+        "copyright": "© 2026 SMJ Trans Jogja. Hak Cipta Dilindungi."
+    },
+    "common": {
+        "learnMore": "Selengkapnya",
+        "readMore": "Baca Selengkapnya",
+        "contactUs": "Hubungi Kami",
+        "rating": "Rating",
+        "reviews": "ulasan",
+        "from": "dari",
+        "startingFrom": "Mulai dari",
+        "perDay": "/hari"
+    }
+}

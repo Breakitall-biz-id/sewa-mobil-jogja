@@ -1,0 +1,80 @@
+---
+/**
+ * Blog Article Card Component
+ * Individual article card for grid display
+ */
+import { Image } from "astro:assets";
+
+interface Props {
+    post: {
+        slug: string;
+        title: string;
+        excerpt: string;
+        image: string;
+        date: string;
+        readTime?: string;
+        category?: string;
+    };
+}
+
+const { post } = Astro.props;
+---
+
+<article
+    class="flex flex-col bg-white dark:bg-[#1f2937] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-slate-100 dark:border-slate-700 h-full group"
+>
+    <a href={`/blog/${post.slug}`} class="contents">
+        <!-- Image -->
+        <div class="relative aspect-[4/3] overflow-hidden">
+            <Image
+                src={post.image}
+                alt={post.title}
+                width={600}
+                height={450}
+                loading="lazy"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            {
+                post.category && (
+                    <span class="absolute top-3 left-3 px-2 py-1 bg-secondary text-white text-[10px] font-bold rounded uppercase tracking-wide">
+                        {post.category}
+                    </span>
+                )
+            }
+        </div>
+
+        <!-- Content -->
+        <div class="p-5 flex flex-col flex-grow">
+            <!-- Title -->
+            <h3
+                class="text-lg font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors"
+            >
+                {post.title}
+            </h3>
+
+            <!-- Excerpt -->
+            <p
+                class="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2 flex-grow"
+            >
+                {post.excerpt}
+            </p>
+
+            <!-- Footer Meta -->
+            <div
+                class="mt-auto flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-4"
+            >
+                <span class="text-xs text-slate-400">{post.date}</span>
+                {
+                    post.readTime && (
+                        <span class="text-xs text-slate-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">
+                                timer
+                            </span>
+                            {post.readTime}
+                        </span>
+                    )
+                }
+            </div>
+        </div>
+    </a>
+</article>

@@ -1,0 +1,80 @@
+---
+/**
+ * Blog Hero Section
+ * Hero with gradient overlay, title, and search input
+ */
+interface Props {
+    title?: string;
+    titleHighlight?: string;
+    subtitle?: string;
+    backgroundImage?: string;
+}
+
+const {
+    title = "Inspirasi Perjalanan",
+    titleHighlight = "Jogja",
+    subtitle = "Temukan rekomendasi tempat wisata tersembunyi, tips sewa mobil, dan panduan kuliner terbaik di Yogyakarta.",
+    backgroundImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuCV_I3TxBEbsG3o2sgPLJ1Vjzt3RirR3VKaStkmKmWLqQ9sOQO6MBHyA88qWCIU33yScrb5XN-8178I3O7lllg8aUuPLEgqdwu_pw_FqxJiH0EOA8YkAyLUkodVlPEnTt25S0ah4wk23XaeCYtDmZUmt9o6JxQB6zguYgxGk2G55FgzuHOlDHDfuE3xF3JxoWDflQCMMPM2Y7HuIPdc9um_BE0T02_M0BbGgrdzNIxYChorS3FUA-pqQX2zkqJHXcEMrbyu7wVWrC87",
+} = Astro.props;
+---
+
+<section
+    class="relative py-24 md:py-32 overflow-hidden bg-cover bg-center bg-no-repeat"
+    style={`background-image: url('${backgroundImage}');`}
+>
+    <!-- Gradient Overlay -->
+    <div
+        class="absolute inset-0 bg-gradient-to-b from-primary/90 via-primary/80 to-primary/90 z-0"
+    >
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+        <!-- Badge -->
+        <span
+            class="inline-block py-1.5 px-4 rounded-full bg-white/10 backdrop-blur-sm text-secondary text-xs font-bold uppercase tracking-wider mb-6 border border-white/20 shadow-sm"
+        >
+            SMJ Travel Blog
+        </span>
+
+        <!-- Title -->
+        <h1
+            class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight drop-shadow-md"
+        >
+            {title}
+            <span class="text-secondary drop-shadow-sm">{titleHighlight}</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p
+            class="text-lg md:text-xl text-slate-100 mb-12 max-w-2xl mx-auto font-medium drop-shadow-sm leading-relaxed"
+        >
+            {subtitle}
+        </p>
+
+        <!-- Search Box -->
+        <div class="max-w-xl mx-auto relative group">
+            <div
+                class="absolute inset-0 bg-white/20 rounded-full blur transition duration-300 group-hover:bg-white/30"
+            >
+            </div>
+            <div class="relative">
+                <input
+                    type="text"
+                    id="blog-search-input"
+                    placeholder="Cari artikel wisata, kuliner, atau tips..."
+                    class="w-full pl-6 pr-14 py-4 md:py-5 rounded-full bg-white/95 backdrop-blur text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-secondary/40 shadow-2xl border-none transition-all"
+                />
+                <button
+                    type="button"
+                    class="absolute right-2 top-2 bottom-2 aspect-square bg-secondary hover:bg-yellow-600 text-white rounded-full flex items-center justify-center transition-colors shadow-md"
+                    aria-label="Search"
+                >
+                    <span class="material-symbols-outlined text-[24px]"
+                        >search</span
+                    >
+                </button>
+            </div>
+        </div>
+    </div>
+</section>

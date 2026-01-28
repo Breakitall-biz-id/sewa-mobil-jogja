@@ -1,0 +1,166 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import WhatsAppButton from "../../components/WhatsAppButton.astro";
+import { getAllCars, urlFor } from "../../lib/sanity";
+import type { SanityCar } from "../../types";
+
+import MobileHeader from "../../components/car/MobileHeader.astro";
+import ImageGallery from "../../components/car/ImageGallery.astro";
+import CarHeaderInfo from "../../components/car/CarHeaderInfo.astro";
+import SpecsGrid from "../../components/car/SpecsGrid.astro";
+import FeatureList from "../../components/car/FeatureList.astro";
+import CarDescription from "../../components/car/CarDescription.astro";
+import BookingSidebar from "../../components/car/BookingSidebar.astro";
+import MobileAction from "../../components/car/MobileAction.astro";
+import RelatedFleet from "../../components/car/RelatedFleet.astro";
+
+export async function getStaticPaths() {
+    const cars = await getAllCars();
+    return cars
+        .filter((car) => car.slug?.current)
+        .map((car) => {
+            const relatedCars = cars
+                .filter((c) => c._id !== car._id && c.category === car.category)
+                .slice(0, 3);
+
+            if (relatedCars.length < 3) {
+                const others = cars
+                    .filter(
+                        (c) => c._id !== car._id && c.category !== car.category,
+                    )
+                    .slice(0, 3 - relatedCars.length);
+                relatedCars.push(...others);
+            }
+
+            return {
+                params: { slug: car.slug.current },
+                props: { car, relatedCars },
+            };
+        });
+}
+
+interface Props {
+    car: SanityCar;
+    relatedCars: SanityCar[];
+}
+
+const { car, relatedCars } = Astro.props;
+const lang = "id";
+
+const seo = {
+    title: `Sewa ${car.name} Jogja - Harga Mulai Rp ${car.pricePerDay?.toLocaleString("id-ID") || "Hubungi Kami"}/hari| SMJ Trans`,
+    description: `Sewa mobil ${car.name} di Jogja. Kapasitas ${car.capacity || 4} orang. ${car.luggage ? `Bagasi ${car.luggage}.` : ""} ${car.fuel ? `BBM ${car.fuel}.` : ""} Harga terjangkau, armada bersih & terawat.`,
+    image: car.image ? urlFor(car.image).url() : "/images/logo.webp",
+};
+
+// Combine main image and gallery for the grid
+const galleryImages = car.gallery || [];
+const allImages = car.image ? [car.image, ...galleryImages] : galleryImages;
+---
+
+<BaseLayout
+    title={seo.title}
+    description={seo.description}
+    image={seo.image}
+    lang={lang}
+>
+    <!-- Desktop & Mobile Header -->
+    <Header lang={lang} />
+
+    <!-- Main Content -->
+    <main
+        class="flex-1 w-full max-w-[1280px] mx-auto px-0 lg:px-8 py-0 lg:py-6 overflow-x-hidden"
+    >
+        <!-- Breadcrumb (Desktop Only) -->
+        <nav
+            aria-label="Breadcrumb"
+            class="hidden lg:flex mb-6 text-sm font-medium text-[#6a7381]"
+        >
+            <ol class="flex items-center space-x-2">
+                <li><a class="hover:text-primary" href="/">Beranda</a></li>
+                <li>
+                    <span class="material-symbols-outlined !text-sm"
+                        >chevron_right</span
+                    >
+                </li>
+                <li><a class="hover:text-primary" href="/armada">Armada</a></li>
+                <li>
+                    <span class="material-symbols-outlined !text-sm"
+                        >chevron_right</span
+                    >
+                </li>
+                <li class="text-primary font-bold">{car.name}</li>
+            </ol>
+        </nav>
+
+        <div
+            class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-2 lg:mb-0 items-start"
+        >
+            <div class="lg:col-span-2 flex flex-col gap-6 lg:gap-8">
+                <!-- Gallery Section -->
+                <section
+                    class="bg-white lg:bg-white rounded-none lg:rounded-2xl py-4 lg:p-6 shadow-none lg:shadow-sm border-0 lg:border border-gray-100 overflow-hidden relative flex flex-col gap-6"
+                >
+                    <!-- Images -->
+                    <ImageGallery
+                        carName={car.name}
+                        images={allImages}
+                        available={car.available}
+                        totalImages={allImages.length}
+                    />
+
+                    <!-- Header Info (Mobile & Desktop) -->
+                    <CarHeaderInfo
+                        name={car.name}
+                        year={car.year}
+                        transmission={car.transmission}
+                        price={car.pricePerDay}
+                    />
+
+                    <!-- Specs -->
+                    <SpecsGrid
+                        capacity={car.capacity}
+                        luggage={car.luggage}
+                        fuel={car.fuel}
+                        transmission={car.transmission}
+                    />
+
+                    <!-- Features (Desktop) -->
+                    <FeatureList features={car.features} />
+                </section>
+
+                <!-- Description & Details (Mobile Accordions / Desktop Grid) -->
+                <CarDescription
+                    description={car.description}
+                    includes={car.includes}
+                    conditions={car.conditions}
+                />
+            </div>
+
+            <!-- Sticky Sidebar (Desktop Only) -->
+            <div class="hidden lg:block lg:col-span-1">
+                <BookingSidebar
+                    carName={car.name}
+                    price={car.pricePerDay}
+                    priceWithDriver={car.priceWithDriver}
+                />
+            </div>
+        </div>
+
+        <!-- Related Cars -->
+        <RelatedFleet relatedCars={relatedCars} />
+    </main>
+
+    <!-- Mobile Fixed Bottom Action Bar -->
+    <MobileAction
+        price={car.pricePerDay}
+        priceWithDriver={car.priceWithDriver}
+        carName={car.name}
+    />
+
+    <div class="hidden lg:block">
+        <Footer lang={lang} />
+    </div>
+</BaseLayout>

@@ -1,0 +1,119 @@
+{
+    "site": {
+        "name": "Car Rental Jogja",
+        "tagline": "Trusted Car Rental in Yogyakarta - SMJ Trans Jogja"
+    },
+    "nav": {
+        "home": "Home",
+        "fleet": "Fleet",
+        "blog": "Blog",
+        "testimonials": "Reviews",
+        "contact": "Contact",
+        "booking": "Booking"
+    },
+    "hero": {
+        "title": "Trusted Car Rental in Jogja",
+        "subtitle": "Well-maintained fleet, transparent pricing, and 24/7 service",
+        "cta": "Find a Car",
+        "ctaBooking": "Book Now"
+    },
+    "usp": {
+        "title": "Why Choose Us?",
+        "items": [
+            {
+                "icon": "car",
+                "title": "Well-Maintained Fleet",
+                "description": "All vehicles are regularly serviced for optimal performance"
+            },
+            {
+                "icon": "money",
+                "title": "Transparent Pricing",
+                "description": "No hidden fees, clear pricing upfront"
+            },
+            {
+                "icon": "driver",
+                "title": "Experienced Drivers",
+                "description": "Friendly and know all tourist routes"
+            },
+            {
+                "icon": "clock",
+                "title": "24/7 Service",
+                "description": "Ready whenever you need us"
+            }
+        ]
+    },
+    "fleet": {
+        "title": "Our Fleet",
+        "viewAll": "View All Vehicles",
+        "categories": {
+            "all": "All",
+            "city-car": "City Car",
+            "mpv": "Family MPV",
+            "premium": "Premium",
+            "minibus": "Minibus"
+        },
+        "perDay": "/day",
+        "capacity": "passengers",
+        "luggage": "luggage",
+        "bookNow": "Book Now",
+        "viewDetails": "View Details"
+    },
+    "testimonials": {
+        "title": "What Our Customers Say",
+        "subtitle": "Reviews from customers who have used our services",
+        "verifiedReview": "Verified Google Review",
+        "viewAll": "View All Reviews"
+    },
+    "pickup": {
+        "title": "Pickup Locations",
+        "subtitle": "We are ready to pick you up at various locations",
+        "locations": [
+            "YIA Airport (Yogyakarta International Airport)",
+            "Tugu Station",
+            "Lempuyangan Station",
+            "Hotel Pickup & Drop-off"
+        ]
+    },
+    "cta": {
+        "title": "Ready for Your Journey?",
+        "subtitle": "Contact us now for the best offer",
+        "button": "Contact via WhatsApp"
+    },
+    "booking": {
+        "title": "Reservation Form",
+        "subtitle": "Fill out the form and we will contact you",
+        "fields": {
+            "carType": "Car Type",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "pickupTime": "Pickup Time",
+            "pickupLocation": "Pickup Location",
+            "destination": "Destination",
+            "name": "Full Name",
+            "phone": "WhatsApp Number",
+            "email": "Email (optional)",
+            "notes": "Additional Notes"
+        },
+        "terms": "I agree to the terms & conditions",
+        "submit": "Send to WhatsApp"
+    },
+    "footer": {
+        "description": "Trusted car rental in Yogyakarta with well-maintained fleet and competitive prices.",
+        "quickLinks": "Quick Links",
+        "ourFleet": "Our Fleet",
+        "contact": "Contact",
+        "operatingHours": "Operating Hours",
+        "hours": "24 Hours (Every Day)",
+        "copyright": "© 2026 SMJ Trans Jogja. All Rights Reserved."
+    },
+    "common": {
+        "learnMore": "Learn More",
+        "readMore": "Read More",
+        "contactUs": "Contact Us",
+        "rating": "Rating",
+        "reviews": "reviews",
+        "from": "from",
+        "startingFrom": "Starting from",
+        "perDay": "/day"
+    }
+}

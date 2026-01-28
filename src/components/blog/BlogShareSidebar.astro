@@ -1,0 +1,84 @@
+---
+/**
+ * Blog Share Sidebar Component
+ * Sticky social share buttons for blog posts
+ */
+interface Props {
+    url?: string;
+    title?: string;
+}
+
+const { url = Astro.url.href, title = "" } = Astro.props;
+
+// Encode for sharing URLs
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+---
+
+<aside class="hidden lg:block lg:col-span-2 relative">
+    <div class="sticky top-32 flex flex-col gap-4 items-end pr-4">
+        <span class="text-xs font-bold uppercase text-slate-400 mb-1"
+            >Share</span
+        >
+
+        <!-- Facebook -->
+        <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+            aria-label="Share on Facebook"
+        >
+            <span class="font-bold text-sm">FB</span>
+        </a>
+
+        <!-- WhatsApp -->
+        <a
+            href={`https://wa.me/?text=${encodedTitle}%20${encodedUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+            aria-label="Share on WhatsApp"
+        >
+            <span class="font-bold text-sm">WA</span>
+        </a>
+
+        <!-- Twitter -->
+        <a
+            href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 rounded-full bg-sky-400 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+            aria-label="Share on Twitter"
+        >
+            <span class="font-bold text-sm">TW</span>
+        </a>
+
+        <!-- Copy Link -->
+        <button
+            class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:scale-110 transition-transform mt-4 copy-link-btn"
+            data-url={url}
+            aria-label="Copy link"
+        >
+            <span class="material-symbols-outlined text-sm">link</span>
+        </button>
+    </div>
+</aside>
+
+<script>
+    document.querySelectorAll(".copy-link-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+            const url = btn.getAttribute("data-url");
+            if (url) {
+                await navigator.clipboard.writeText(url);
+                const icon = btn.querySelector(".material-symbols-outlined");
+                if (icon) {
+                    icon.textContent = "check";
+                    setTimeout(() => {
+                        icon.textContent = "link";
+                    }, 2000);
+                }
+            }
+        });
+    });
+</script>

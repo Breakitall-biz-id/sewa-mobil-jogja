@@ -1,0 +1,38 @@
+---
+import Hero from "./Hero.astro";
+import TextWithImage from "./TextWithImage.astro";
+import FeaturesGrid from "./FeaturesGrid.astro";
+import FleetSelection from "./FleetSelection.astro";
+import FAQ from "./FAQ.astro";
+import TrustSignals from "./TrustSignals.astro";
+import ProcessSteps from "./ProcessSteps.astro";
+
+interface Props {
+    sections: any[];
+}
+
+const { sections } = Astro.props;
+---
+
+{
+    sections?.map((section) => {
+        switch (section._type) {
+            case "hero":
+                return <Hero data={section} />;
+            case "textWithImage":
+                return <TextWithImage data={section} />;
+            case "features":
+                return <FeaturesGrid data={section} />;
+            case "fleetSelection":
+                return <FleetSelection data={section} />;
+            case "faq":
+                return <FAQ data={section} />;
+            case "trustSignals":
+                return <TrustSignals data={section} />;
+            case "processSteps":
+                return <ProcessSteps data={section} />;
+            default:
+                return null;
+        }
+    })
+}

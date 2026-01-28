@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageBuilder from "../../components/sections/PageBuilder.astro";
+import { sanityClient, urlFor } from "../../lib/sanity";
+import type { SanityLandingPage } from "../../types";
+
+export async function getStaticPaths() {
+    const pages = await sanityClient.fetch(`*[_type == "landingPage"]`);
+    return pages.map((page: SanityLandingPage) => ({
+        params: { slug: page.slug.current },
+        props: { page },
+    }));
+}
+
+interface Props {
+    page: SanityLandingPage;
+}
+
+const { page } = Astro.props;
+
+const seo = {
+    title: page.seo?.metaTitle || page.title,
+    description: page.seo?.metaDescription || "",
+    image: page.featuredImage
+        ? urlFor(page.featuredImage).width(1200).url()
+        : undefined,
+};
+---
+
+<BaseLayout title={seo.title} description={seo.description} image={seo.image}>
+    <PageBuilder sections={page.content || []} />
+</BaseLayout>

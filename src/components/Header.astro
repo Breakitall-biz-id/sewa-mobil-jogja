@@ -1,0 +1,161 @@
+---
+import { getSiteSettings, urlFor } from "../lib/sanity";
+import { Image } from "astro:assets";
+
+interface Props {
+  lang?: "id" | "en";
+}
+
+const { lang = "id" } = Astro.props;
+
+const settings = await getSiteSettings();
+const whatsappNumber = settings?.whatsapp || "628812725610";
+const logoUrl = settings?.logo
+  ? urlFor(settings.logo).width(200).url()
+  : "/images/logo.webp";
+
+const navItems =
+  lang === "id"
+    ? [
+        { href: "/", label: "Home" },
+        { href: "/armada", label: "Armada" },
+        { href: "/blog", label: "Blog" },
+        { href: "/kontak", label: "Kontak" },
+      ]
+    : [
+        { href: "/en", label: "Home" },
+        { href: "/en/fleet", label: "Fleet" },
+        { href: "/en/blog", label: "Blog" },
+        { href: "/en/contact", label: "Contact" },
+      ];
+
+const ctaText = lang === "id" ? "Hubungi Kami" : "Contact Us";
+const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent("Halo admin, saya mau Sewa Mobil")}`;
+const currentPath = Astro.url.pathname;
+const isActiveLink = (href: string) => {
+  if (href === "/" || href === "/en") {
+    return currentPath === href;
+  }
+  return currentPath.startsWith(href);
+};
+---
+
+<header
+  class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm"
+>
+  <div class="container-main">
+    <div class="flex justify-between items-center h-20">
+      <!-- Logo -->
+      <a
+        href={lang === "id" ? "/" : "/en"}
+        class="flex items-center gap-2"
+        aria-label="Home"
+      >
+        <Image
+          src={logoUrl}
+          alt="SMJ Trans Jogja Logo"
+          width={200}
+          height={60}
+          class="h-10 w-auto object-contain"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-8">
+        {
+          navItems.map((item) => {
+            const active = isActiveLink(item.href);
+            return (
+              <a
+                href={item.href}
+                class:list={[
+                  "relative py-1 text-sm font-medium transition-colors group",
+                  active
+                    ? "text-[#1f3b61] font-bold"
+                    : "text-slate-600 hover:text-[#1f3b61]",
+                ]}
+              >
+                {item.label}
+                <span
+                  class:list={[
+                    "absolute bottom-0 left-0 h-0.5 bg-[#d97706] transition-all duration-300 ease-out",
+                    active ? "w-full" : "w-0 group-hover:w-full",
+                  ]}
+                />
+              </a>
+            );
+          })
+        }
+      </nav>
+
+      <!-- CTA & Mobile Menu -->
+      <div class="flex items-center gap-4">
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hidden sm:flex items-center gap-2 bg-[#d97706] hover:bg-[#b45309] text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-lg shadow-yellow-500/20"
+        >
+          <span class="material-symbols-outlined text-[20px]">call</span>
+          {ctaText}
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden p-2 text-slate-600"
+          aria-label="Menu"
+        >
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Panel -->
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden bg-white border-t border-gray-100 px-4 pb-4"
+  >
+    <nav class="flex flex-col gap-2 pt-4">
+      {
+        navItems.map((item) => {
+          const active = isActiveLink(item.href);
+          return (
+            <a
+              href={item.href}
+              class:list={[
+                "px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-between",
+                active
+                  ? "bg-[#eff6ff] text-[#1f3b61] font-bold shadow-sm border border-blue-100"
+                  : "text-slate-600 hover:bg-gray-50",
+              ]}
+            >
+              {item.label}
+              {active && <span class="w-1.5 h-1.5 rounded-full bg-[#d97706]" />}
+            </a>
+          );
+        })
+      }
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        class="mt-2 flex items-center justify-center gap-2 bg-[#d97706] text-white px-5 py-3 rounded-lg font-bold"
+      >
+        <span class="material-symbols-outlined text-[20px]">call</span>
+        {ctaText}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const menuBtn = document.getElementById("mobile-menu-btn");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  menuBtn?.addEventListener("click", () => {
+    mobileMenu?.classList.toggle("hidden");
+  });
+</script>

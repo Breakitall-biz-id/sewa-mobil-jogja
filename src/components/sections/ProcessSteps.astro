@@ -1,0 +1,49 @@
+---
+interface Props {
+    data: {
+        title?: string;
+        steps?: Array<{
+            stepTitle: string;
+            stepDesc: string;
+        }>;
+    };
+}
+
+const { data } = Astro.props;
+---
+
+<section class="py-20 bg-white dark:bg-slate-900">
+    <div class="container mx-auto px-4">
+        {
+            data.title && (
+                <h2 class="text-3xl font-bold text-center mb-16">
+                    {data.title}
+                </h2>
+            )
+        }
+
+        <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto relative"
+        >
+            <!-- Connection Line (Desktop) -->
+            <div
+                class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-slate-100 dark:bg-slate-800 -z-0"
+            >
+            </div>
+
+            {
+                data.steps?.map((step, index) => (
+                    <div class="relative z-10 text-center group">
+                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-xl group-hover:scale-110 transition-transform">
+                            {index + 1}
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">{step.stepTitle}</h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            {step.stepDesc}
+                        </p>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,41 @@
+---
+/**
+ * Trust Stats Bar
+ * Shows key statistics to build trust
+ */
+interface Props {
+  lang?: 'id' | 'en';
+}
+
+const { lang = 'id' } = Astro.props;
+
+const stats = lang === 'id' ? [
+  { icon: 'directions_car', value: '50+', label: 'Unit Ready' },
+  { icon: 'groups', value: '10k+', label: 'Pelanggan Puas' },
+  { icon: 'verified_user', value: '100%', label: 'Aman & Resmi' },
+  { icon: 'map', value: 'Jogja', label: 'City Coverage' },
+] : [
+  { icon: 'directions_car', value: '50+', label: 'Units Ready' },
+  { icon: 'groups', value: '10k+', label: 'Happy Customers' },
+  { icon: 'verified_user', value: '100%', label: 'Safe & Legal' },
+  { icon: 'map', value: 'Jogja', label: 'City Coverage' },
+];
+---
+
+<section class="w-full bg-white border-b border-slate-100">
+  <div class="container-main py-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+      {stats.map((stat) => (
+        <div class="flex items-center gap-4 justify-center md:justify-start">
+          <div class="w-12 h-12 rounded-full bg-[#1f3b61]/10 flex items-center justify-center text-[#1f3b61]">
+            <span class="material-symbols-outlined">{stat.icon}</span>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-slate-900">{stat.value}</p>
+            <p class="text-sm text-slate-500">{stat.label}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

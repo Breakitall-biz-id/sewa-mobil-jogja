@@ -1,0 +1,97 @@
+---
+interface Props {
+  name: string;
+  category: string;
+  image: string;
+  capacity: number;
+  luggage?: number;
+  pricePerDay: number;
+  slug: string;
+  features?: string[];
+  lang?: 'id' | 'en';
+}
+
+const { name, category, image, capacity, luggage, pricePerDay, slug, features, lang = 'id' } = Astro.props;
+
+// Format price
+const formattedPrice = new Intl.NumberFormat('id-ID').format(pricePerDay);
+
+// Category labels
+const categoryLabels: Record<string, string> = {
+  'city-car': lang === 'id' ? 'City Car' : 'City Car',
+  'mpv': lang === 'id' ? 'Family MPV' : 'Family MPV',
+  'premium': lang === 'id' ? 'Premium' : 'Premium',
+  'minibus': 'Minibus',
+};
+
+const prefix = lang === 'en' ? '/en/fleet' : '/armada';
+---
+
+<div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all group border border-gray-100">
+  <!-- Image -->
+  <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
+    <img 
+      src={image} 
+      alt={`Rental ${name} Jogja`}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+      loading="lazy"
+    />
+    <!-- Category Badge -->
+    <span class="absolute top-3 left-3 bg-[var(--color-primary)] text-white text-xs font-medium px-3 py-1 rounded-full">
+      {categoryLabels[category] || category}
+    </span>
+  </div>
+  
+  <!-- Content -->
+  <div class="p-5">
+    <!-- Title -->
+    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-[var(--color-primary)] transition-colors">
+      {name}
+    </h3>
+    
+    <!-- Specs -->
+    <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
+      <span class="flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+        {capacity} {lang === 'id' ? 'org' : 'pax'}
+      </span>
+      {luggage && (
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          {luggage} {lang === 'id' ? 'koper' : 'bags'}
+        </span>
+      )}
+    </div>
+    
+    <!-- Features Tags -->
+    {features && features.length > 0 && (
+      <div class="flex flex-wrap gap-1 mb-4">
+        {features.slice(0, 3).map((feature) => (
+          <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
+            {feature}
+          </span>
+        ))}
+      </div>
+    )}
+    
+    <!-- Price & CTA -->
+    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+      <div>
+        <p class="text-xs text-gray-500">{lang === 'id' ? 'Mulai dari' : 'Starting from'}</p>
+        <p class="text-lg font-bold text-[var(--color-accent)]">
+          Rp {formattedPrice}<span class="text-sm font-normal text-gray-500">/{lang === 'id' ? 'hari' : 'day'}</span>
+        </p>
+      </div>
+      <a 
+        href={`${prefix}/${slug}`}
+        class="bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[var(--color-primary-light)] transition-colors"
+      >
+        {lang === 'id' ? 'Detail' : 'Details'}
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+---
+import { urlFor } from "../../lib/sanity";
+import { PortableText } from "astro-portabletext";
+
+interface Props {
+    data: {
+        title?: string;
+        content?: any;
+        image?: any;
+        layout?: "left" | "right";
+        theme?: "light" | "dark";
+    };
+}
+
+const { data } = Astro.props;
+const isRight = data.layout === "right";
+const isDark = data.theme === "dark";
+---
+
+<section
+    class={`py-20 ${isDark ? "bg-slate-900 text-white" : "bg-white text-slate-900"}`}
+>
+    <div class="container mx-auto px-4">
+        <div
+            class={`flex flex-col lg:flex-row items-center gap-12 ${isRight ? "" : "lg:flex-row-reverse"}`}
+        >
+            <div class="w-full lg:w-1/2 space-y-6">
+                {
+                    data.title && (
+                        <h2 class="text-3xl md:text-4xl font-bold leading-tight">
+                            {data.title}
+                        </h2>
+                    )
+                }
+                <div
+                    class={`prose lg:prose-xl ${isDark ? "prose-invert" : "prose-slate"}`}
+                >
+                    <PortableText value={data.content} />
+                </div>
+            </div>
+
+            <div class="w-full lg:w-1/2">
+                {
+                    data.image && (
+                        <div class="relative group">
+                            <div class="absolute -inset-4 bg-primary/20 rounded-2xl blur-2xl group-hover:bg-primary/30 transition-colors" />
+                            <img
+                                src={urlFor(data.image)
+                                    .width(800)
+                                    .height(600)
+                                    .auto("format")
+                                    .url()}
+                                alt={data.image.alt || data.title}
+                                class="relative rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full h-auto object-cover"
+                            />
+                        </div>
+                    )
+                }
+            </div>
+        </div>
+    </div>
+</section>

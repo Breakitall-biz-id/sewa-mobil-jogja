@@ -1,0 +1,74 @@
+---
+interface Props {
+    name: string;
+    year?: string | number;
+    transmission?: string;
+    price?: number;
+}
+
+const { name, year, transmission, price } = Astro.props;
+---
+
+<!-- Mobile Header Info -->
+<section class="lg:hidden px-5 py-6 bg-white border-b border-gray-100">
+    <h1 class="text-2xl font-extrabold text-primary leading-tight">{name}</h1>
+    <div
+        class="flex items-center gap-2 mt-2 text-[#64748b] text-sm font-medium"
+    >
+        <span>Tahun {year || "2023"}</span>
+        <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+        <span>{transmission || "Automatic"}</span>
+    </div>
+    <div class="mt-4 flex items-center">
+        <div
+            class="bg-primary/5 text-primary px-3 py-1.5 rounded-lg border border-primary/10"
+        >
+            <span class="text-xs font-bold uppercase tracking-wider opacity-60"
+                >Harga Sewa</span
+            >
+            <p class="text-lg font-black">
+                {price ? `Rp ${price.toLocaleString("id-ID")}` : "Hubungi Kami"}
+                <span class="text-sm font-normal text-[#64748b]">/ hari</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Desktop Header Info -->
+<div
+    class="hidden lg:flex flex-col md:flex-row justify-between items-start md:items-end lg:border-b lg:border-gray-100 lg:pb-6 gap-4"
+>
+    <div>
+        <h1 class="text-3xl font-black text-primary leading-none">{name}</h1>
+        <p class="text-[#6a7381] mt-2 font-medium flex items-center gap-2">
+            {
+                year && (
+                    <span class="bg-gray-100 px-2 py-0.5 rounded text-xs">
+                        Tahun {year}
+                    </span>
+                )
+            }
+            {
+                year && transmission && (
+                    <span class="w-1 h-1 rounded-full bg-gray-300" />
+                )
+            }
+            {
+                transmission && (
+                    <span class="bg-gray-100 px-2 py-0.5 rounded text-xs">
+                        {transmission}
+                    </span>
+                )
+            }
+        </p>
+    </div>
+    <div class="text-left md:text-right">
+        <p class="text-xs text-[#6a7381] font-medium uppercase tracking-wider">
+            Harga Sewa
+        </p>
+        <p class="text-3xl font-bold text-primary">
+            Rp {price?.toLocaleString("id-ID") || "Hubungi Kami"}
+            <span class="text-lg font-normal text-[#6a7381]">/ hari</span>
+        </p>
+    </div>
+</div>

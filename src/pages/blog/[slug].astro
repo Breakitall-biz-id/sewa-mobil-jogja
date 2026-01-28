@@ -1,0 +1,311 @@
+---
+import { PortableText } from "astro-portabletext";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import WhatsAppButton from "../../components/WhatsAppButton.astro";
+import Breadcrumbs from "../../components/blog/Breadcrumbs.astro";
+import BlogPostHeader from "../../components/blog/BlogPostHeader.astro";
+import BlogPostHeroImage from "../../components/blog/BlogPostHeroImage.astro";
+import BlogShareSidebar from "../../components/blog/BlogShareSidebar.astro";
+import BlogCommentForm from "../../components/blog/BlogCommentForm.tsx";
+import BlogCommentList from "../../components/blog/BlogCommentList.astro";
+import BlogRelatedPosts from "../../components/blog/BlogRelatedPosts.astro";
+import BlogCTABanner from "../../components/blog/BlogCTABanner.astro";
+import BlockH1 from "../../components/portabletext/H1.astro";
+import BlockH2 from "../../components/portabletext/H2.astro";
+import BlockH3 from "../../components/portabletext/H3.astro";
+import BlockParagraph from "../../components/portabletext/Paragraph.astro";
+import BlockBlockquote from "../../components/portabletext/Blockquote.astro";
+import ListBullet from "../../components/portabletext/BulletList.astro";
+import ListNumber from "../../components/portabletext/NumberList.astro";
+import ListItem from "../../components/portabletext/ListItem.astro";
+import MarkStrong from "../../components/portabletext/Strong.astro";
+import MarkLink from "../../components/portabletext/Link.astro";
+import TypeImage from "../../components/portabletext/SanityImage.astro";
+import {
+    getAllPosts,
+    getPostBySlug,
+    urlFor,
+    getCommentsByPostSlug,
+} from "../../lib/sanity";
+import type { SanityPost, SanityComment } from "../../types";
+import "../../styles/global.css";
+
+export async function getStaticPaths() {
+    const posts = await getAllPosts();
+    return posts.map((post: any) => ({
+        params: { slug: post.slug.current },
+    }));
+}
+
+const lang = "id";
+const { slug } = Astro.params;
+
+const postData = await getPostBySlug(slug as string);
+
+if (!postData) {
+    return Astro.redirect("/404");
+}
+
+const post = {
+    title: postData.title,
+    category: postData.category?.title || "Uncategorized",
+    author: {
+        name: postData.author?.name || "Admin",
+        avatar: postData.author?.avatar
+            ? urlFor(postData.author.avatar).url()
+            : "https://ui-avatars.com/api/?name=Admin",
+    },
+    date: postData.publishedAt
+        ? new Date(postData.publishedAt).toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+          })
+        : "",
+    readTime: postData.readTime
+        ? `${postData.readTime} Menit Baca`
+        : "5 Menit Baca",
+    image: postData.featuredImage
+        ? urlFor(postData.featuredImage)
+              .width(1200)
+              .height(675)
+              .fit("crop")
+              .url()
+        : "/images/blog-placeholder.jpg",
+    excerpt: postData.excerpt,
+    tags: postData.tags || [],
+    content: postData.content,
+};
+
+const breadcrumbs = [
+    { label: "Home", href: "/" },
+    { label: "Blog", href: "/blog" },
+    { label: post.title },
+];
+
+const sanityComments = await getCommentsByPostSlug(slug as string);
+
+const comments = sanityComments.map((c) => ({
+    id: c._id,
+    author: {
+        name: c.name,
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}`,
+    },
+    content: c.comment,
+    date: new Date(c._createdAt).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    }),
+    replies: [],
+}));
+
+const allPosts = await getAllPosts();
+const relatedPostsRaw = allPosts
+    .filter((p: any) => p.slug.current !== slug)
+    .slice(0, 3);
+
+const relatedPosts = relatedPostsRaw.map((p: any) => ({
+    slug: p.slug.current,
+    title: p.title,
+    excerpt: p.excerpt,
+    image: p.featuredImage
+        ? urlFor(p.featuredImage).url()
+        : "/images/blog-placeholder.jpg",
+    category: p.category?.title || "Blog",
+    date: new Date(p.publishedAt).toLocaleDateString("id-ID", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    }),
+}));
+
+const seo = {
+    title: postData.seo?.title || `${post.title} - SMJ Trans Jogja`,
+    description: postData.seo?.description || post.excerpt,
+    canonical: `https://sewamobiljogjaku.id/blog/${slug}`,
+};
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    image: post.image,
+    author: {
+        "@type": "Person",
+        name: post.author.name,
+    },
+    publisher: {
+        "@type": "Organization",
+        name: "SMJ Trans Jogja",
+        logo: {
+            "@type": "ImageObject",
+            url: "https://sewamobiljogjaku.id/images/logo.webp",
+        },
+    },
+    datePublished: postData.publishedAt,
+    dateModified: postData.publishedAt,
+    mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": seo.canonical,
+    },
+};
+
+const components = {
+    block: {
+        h1: BlockH1,
+        h2: BlockH2,
+        h3: BlockH3,
+        normal: BlockParagraph,
+        blockquote: BlockBlockquote,
+    },
+    list: {
+        bullet: ListBullet,
+        number: ListNumber,
+    },
+    listItem: {
+        bullet: ListItem,
+        number: ListItem,
+    },
+    marks: {
+        strong: MarkStrong,
+        link: MarkLink,
+    },
+    type: {
+        image: TypeImage,
+    },
+};
+---
+
+<html lang={lang}>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
+        <link rel="canonical" href={seo.canonical} />
+
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta property="og:image" content={post.image} />
+        <meta property="og:url" content={seo.canonical} />
+        <meta property="article:published_time" content={post.date} />
+        <meta property="article:author" content={post.author.name} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <meta name="twitter:image" content={post.image} />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+            rel="stylesheet"
+        />
+
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify(structuredData)}
+        />
+
+        <style>
+            .blog-content p {
+                font-family: "Inter", sans-serif;
+            }
+        </style>
+    </head>
+
+    <body
+        class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white"
+    >
+        <Header />
+        <Breadcrumbs items={breadcrumbs} />
+
+        <main class="relative w-full pb-20">
+            <BlogPostHeader
+                title={post.title}
+                category={post.category}
+                author={post.author}
+                date={post.date}
+                readTime={post.readTime}
+            />
+
+            <BlogPostHeroImage src={post.image} alt={post.title} />
+
+            <div
+                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative grid grid-cols-1 lg:grid-cols-12 gap-8"
+            >
+                <BlogShareSidebar url={seo.canonical} title={post.title} />
+
+                <article
+                    class="lg:col-span-8 blog-content prose prose-lg prose-slate dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed"
+                >
+                    {
+                        post.content ? (
+                            <PortableText
+                                value={post.content}
+                                components={components}
+                            />
+                        ) : (
+                            <p>Konten tidak tersedia.</p>
+                        )
+                    }
+
+                    <div class="mt-8">
+                        <BlogCTABanner />
+                    </div>
+
+                    <div
+                        class="flex flex-wrap gap-2 mt-12 pt-8 border-t border-slate-100 dark:border-slate-800"
+                    >
+                        <span class="text-sm font-semibold text-slate-500 py-1"
+                            >Tags:</span
+                        >
+                        {
+                            post.tags.map((tag: string) => (
+                                <a
+                                    href={`/blog/tag/${tag.replace("#", "").toLowerCase()}`}
+                                    class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs rounded-full hover:bg-primary hover:text-white transition-colors"
+                                >
+                                    {tag}
+                                </a>
+                            ))
+                        }
+                    </div>
+
+                    <div
+                        id="comments"
+                        class="mt-16 pt-10 border-t border-slate-200 dark:border-slate-800"
+                    >
+                        <h3
+                            class="text-2xl font-bold text-slate-900 dark:text-white mb-8"
+                        >
+                            Komentar ({comments.length})
+                        </h3>
+
+                        <BlogCommentForm client:load postSlug={slug} />
+                        <BlogCommentList comments={comments} />
+                    </div>
+                </article>
+
+                <aside class="hidden lg:block lg:col-span-2"></aside>
+            </div>
+        </main>
+
+        <BlogRelatedPosts posts={relatedPosts} />
+        <Footer />
+        <WhatsAppButton />
+    </body>
+</html>

@@ -1,0 +1,128 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Header from "../../../components/Header.astro";
+import Footer from "../../../components/Footer.astro";
+import WhatsAppButton from "../../../components/WhatsAppButton.astro";
+import BlogArticleCard from "../../../components/blog/BlogArticleCard.astro";
+import BlogSidebar from "../../../components/blog/BlogSidebar.astro";
+import { getAllPosts, getAllCategories, urlFor } from "../../../lib/sanity";
+import type { SanityPost, SanityCategory } from "../../../types";
+
+export async function getStaticPaths() {
+    const allPosts = await getAllPosts();
+    const allCategories = await getAllCategories();
+
+    // Map all valid categories from Sanity
+    return allCategories.map((category) => {
+        const filteredPosts = allPosts.filter(
+            (post) => post.category?.slug?.current === category.slug.current,
+        );
+
+        return {
+            params: { category: category.slug.current },
+            props: {
+                categoryName: category.title,
+                categorySlug: category.slug.current,
+                posts: filteredPosts,
+                allCategories: allCategories,
+                allPosts: allPosts, // pass all posts to calculate sidebar content
+            },
+        };
+    });
+}
+
+const { category } = Astro.params;
+const { categoryName, posts, allCategories, allPosts } = Astro.props;
+const lang = "id";
+
+const blogPosts = posts.map((post: SanityPost) => ({
+    slug: post.slug?.current || post._id,
+    title: post.title,
+    excerpt: post.excerpt || "",
+    image: post.featuredImage
+        ? urlFor(post.featuredImage).width(600).height(450).url()
+        : "",
+    date: post.publishedAt
+        ? new Date(post.publishedAt).toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+          })
+        : "",
+    readTime: post.readTime ? `${post.readTime} min` : "5 min",
+    category: post.category?.title || "Umum",
+}));
+
+// Sidebar data derived from props
+const categories = allCategories
+    .map((cat: SanityCategory) => ({
+        slug: cat.slug.current,
+        name: cat.title,
+        count: allPosts.filter(
+            (p: SanityPost) => p.category?.slug?.current === cat.slug.current,
+        ).length,
+    }))
+    .filter((c: any) => c.count > 0)
+    .sort((a: any, b: any) => b.count - a.count);
+
+const allTags = allPosts.flatMap((p: SanityPost) => p.tags || []);
+const uniqueTags = [...new Set(allTags)].slice(0, 10);
+const tags = uniqueTags;
+
+const seo = {
+    title: `Kategori: ${categoryName} - Blog SMJ Trans Jogja`,
+    description: `Artikel terkini seputar ${categoryName}. Tips wisata, rekomendasi kuliner, dan panduan sewa mobil di Jogja.`,
+};
+---
+
+<BaseLayout title={seo.title} description={seo.description} lang={lang}>
+    <Header lang={lang} />
+
+    <main class="flex-1 bg-slate-50 dark:bg-slate-900">
+        <!-- Header Section -->
+        <div
+            class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 py-12"
+        >
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <p
+                    class="text-sm font-semibold text-primary uppercase tracking-wider mb-2"
+                >
+                    Kategori
+                </p>
+                <h1
+                    class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
+                >
+                    {categoryName}
+                </h1>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Articles Column -->
+                <div class="lg:col-span-9">
+                    {
+                        blogPosts.length > 0 ? (
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {blogPosts.map((post: any) => (
+                                    <BlogArticleCard post={post} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div class="text-center py-12 text-slate-500">
+                                <p>Belum ada artikel dalam kategori ini.</p>
+                            </div>
+                        )
+                    }
+                </div>
+
+                <!-- Sidebar -->
+                <BlogSidebar categories={categories} tags={tags} />
+            </div>
+        </div>
+    </main>
+
+    <Footer lang={lang} />
+    <WhatsAppButton />
+</BaseLayout>

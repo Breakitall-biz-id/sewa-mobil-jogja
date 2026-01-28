@@ -1,0 +1,195 @@
+---
+import { Image } from "astro:assets";
+import { urlFor } from "../../lib/sanity";
+
+interface Props {
+    carName: string;
+    images: any[];
+    available?: boolean;
+    totalImages: number;
+}
+
+const { carName, images, available, totalImages } = Astro.props;
+// Use all images for the slider, limit to 5 for desktop thumbnails
+const sliderImages = images.slice(0, 5);
+const thumbnailImages = images.slice(0, 5);
+---
+
+<div class="space-y-4">
+    <!-- Desktop View (Big Image + Grid) -->
+    <div class="hidden lg:flex flex-col gap-3">
+        <!-- Main Image -->
+        <div
+            class="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-sm group bg-gray-100 cursor-pointer"
+            onclick="openLightbox(0)"
+        >
+            {
+                sliderImages[0] ? (
+                    <Image
+                        src={urlFor(sliderImages[0]).width(1200).height(900).auto("format").url()}
+                        alt={`${carName} Main View`}
+                        width={1200}
+                        height={900}
+                        class="w-full h-full object-cover"
+                        loading="eager"
+                        fetchpriority="high"
+                    />
+                ) : (
+                    <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                        No Image
+                    </div>
+                )
+            }
+             <!-- Standard Desktop Available Badge -->
+            {
+                available && (
+                    <div class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                        Tersedia
+                    </div>
+                )
+            }
+        </div>
+
+        <!-- Thumbnails -->
+         <div class="grid grid-cols-5 gap-3">
+            {thumbnailImages.map((img: any, index: number) => (
+                <div 
+                    class="aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity ring-2 ring-transparent hover:ring-primary relative"
+                    onclick={`openLightbox(${index})`}
+                >
+                    <Image
+                        src={urlFor(img).width(200).height(200).auto("format").url()}
+                        alt={`${carName} view ${index + 1}`}
+                        width={200}
+                        height={200}
+                        class="w-full h-full object-cover"
+                    />
+                    {index === 4 && totalImages > 5 && (
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white font-bold text-sm">
+                            +{totalImages - 5}
+                        </div>
+                    )}
+                </div>
+            ))}
+        </div>
+    </div>
+
+    <!-- Mobile View (Swipeable Slider) -->
+    <div class="block lg:hidden relative group">
+        <!-- Slider Container -->
+        <div 
+            class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-0 w-full aspect-[4/3]"
+            id="mobile-slider"
+        >
+            {sliderImages.map((img: any, index: number) => (
+                <div class="min-w-full snap-center relative">
+                    <Image
+                        src={urlFor(img).width(800).height(600).auto("format").url()}
+                        alt={`${carName} View ${index + 1}`}
+                        width={800}
+                        height={600}
+                        class="w-full h-full object-cover"
+                        loading={index === 0 ? "eager" : "lazy"}
+                        fetchpriority={index === 0 ? "high" : "auto"}
+                    />
+                </div>
+            ))}
+        </div>
+
+        <!-- Mobile Available Badge -->
+        {available && (
+            <div class="absolute top-4 left-4">
+                <span class="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                    Tersedia
+                </span>
+            </div>
+        )}
+
+        <!-- Mobile Dots Indicator -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5" id="slider-dots">
+            {sliderImages.map((_, index) => (
+                <div class={`size-2 rounded-full transition-colors ${index === 0 ? 'bg-secondary' : 'bg-white/50'}`}></div>
+            ))}
+        </div>
+    </div>
+</div>
+
+<!-- Simple Lightbox Script -->
+<script define:vars={{ imageCount: sliderImages.length }}>
+    // Mobile Slider Logic
+    const slider = document.getElementById('mobile-slider');
+    const dots = document.getElementById('slider-dots')?.children;
+
+    if (slider && dots) {
+        slider.addEventListener('scroll', () => {
+            const index = Math.round(slider.scrollLeft / slider.clientWidth);
+            Array.from(dots).forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove('bg-white/50');
+                    dot.classList.add('bg-secondary');
+                } else {
+                    dot.classList.add('bg-white/50');
+                    dot.classList.remove('bg-secondary');
+                }
+            });
+        });
+    }
+</script>
+
+<!-- Desktop Lightbox Modal (Same as before) -->
+<div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden items-center justify-center opacity-0 transition-opacity duration-300">
+    <button class="absolute top-4 right-4 text-white p-2 hover:bg-white/10 rounded-full z-[101]" onclick="closeLightbox()">
+        <span class="material-symbols-outlined !text-4xl">close</span>
+    </button>
+    
+    <div class="relative w-full max-w-7xl max-h-[90vh] flex items-center justify-center px-4 md:px-12">
+        <button class="absolute left-4 text-white p-2 hover:bg-white/10 rounded-full" onclick="changeImage(-1)">
+             <span class="material-symbols-outlined !text-4xl">chevron_left</span>
+        </button>
+        
+        <img id="lightbox-image" src="" alt="Full view" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl" />
+        
+        <button class="absolute right-4 text-white p-2 hover:bg-white/10 rounded-full" onclick="changeImage(1)">
+            <span class="material-symbols-outlined !text-4xl">chevron_right</span>
+        </button>
+    </div>
+</div>
+
+{
+    /* Generate URLs server-side for lightbox */
+    (() => {
+        const imageUrls = images.map(img => urlFor(img).width(1600).url());
+        return (
+            <script define:vars={{ imageUrls }}>
+                let currentIndex = 0;
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImg = document.getElementById('lightbox-image');
+                
+                window.openLightbox = (index) => {
+                    currentIndex = index;
+                    updateImage();
+                    lightbox.style.display = 'flex';
+                    requestAnimationFrame(() => { lightbox.classList.remove('opacity-0'); });
+                    document.body.style.overflow = 'hidden';
+                };
+                
+                window.closeLightbox = () => {
+                    lightbox.classList.add('opacity-0');
+                    setTimeout(() => {
+                        lightbox.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }, 300);
+                };
+                
+                window.changeImage = (direction) => {
+                    currentIndex = (currentIndex + direction + imageUrls.length) % imageUrls.length;
+                    updateImage();
+                };
+                
+                function updateImage() {
+                    lightboxImg.src = imageUrls[currentIndex];
+                }
+            </script>
+        );
+    })()
+}

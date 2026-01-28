@@ -1,0 +1,154 @@
+[
+  {
+    "path": "/",
+    "score": 0.96,
+    "performance": 0.9,
+    "accessibility": 0.95,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/armada",
+    "score": 0.97,
+    "performance": 0.93,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/armada/brio-satya",
+    "score": 0.94,
+    "performance": 0.81,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/armada/grand-new-avanza",
+    "score": 0.94,
+    "performance": 0.82,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/blog",
+    "score": 0.88,
+    "performance": 0.56,
+    "accessibility": 0.95,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/blog/18-makanan-khas-jogja-versi-kompetitif-untuk-bisnis-anda-dapatkan-inspirasi-menu-jogja-lainnya",
+    "score": 0.92,
+    "performance": 0.74,
+    "accessibility": 0.94,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/blog/5-destinasi-wisata-hidden-gem-di-jogja-2024",
+    "score": 0.88,
+    "performance": 0.56,
+    "accessibility": 0.94,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/blog/kategori/kulineran",
+    "score": 0.97,
+    "performance": 0.94,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/blog/kategori/tips-traveling",
+    "score": 0.97,
+    "performance": 0.93,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/booking",
+    "score": 0.97,
+    "performance": 0.92,
+    "accessibility": 0.96,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/booking?car=brio-satya",
+    "score": 0.88,
+    "performance": 0.56,
+    "accessibility": 0.96,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/booking?car=grand-new-avanza",
+    "score": 0.97,
+    "performance": 0.92,
+    "accessibility": 0.96,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/faq",
+    "score": 0.97,
+    "performance": 0.96,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/harga",
+    "score": 0.97,
+    "performance": 0.96,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/kontak",
+    "score": 0.92,
+    "performance": 0.72,
+    "accessibility": 0.95,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/privacy",
+    "score": 0.97,
+    "performance": 0.95,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/syarat-ketentuan",
+    "score": 0.98,
+    "performance": 0.98,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/tentang",
+    "score": 0.98,
+    "performance": 0.98,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  },
+  {
+    "path": "/terms",
+    "score": 0.98,
+    "performance": 0.98,
+    "accessibility": 0.93,
+    "best-practices": 1,
+    "seo": 1
+  }
+]

@@ -1,0 +1,22 @@
+---
+const { node } = Astro.props;
+const href = node.mark?.href;
+const isCrawlable = href && !href.startsWith("javascript:");
+---
+
+{
+    !isCrawlable ? (
+        <span class="text-primary hover:text-secondary underline decoration-2 underline-offset-2 transition-colors">
+            <slot />
+        </span>
+    ) : (
+        <a
+            href={href}
+            class="text-primary hover:text-secondary underline decoration-2 underline-offset-2 transition-colors"
+            target={href.startsWith("http") ? "_blank" : undefined}
+            rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+        >
+            <slot />
+        </a>
+    )
+}

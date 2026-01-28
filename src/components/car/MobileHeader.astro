@@ -1,0 +1,80 @@
+---
+
+---
+
+<header
+    class="sticky top-0 z-50 flex lg:hidden items-center justify-between border-b border-gray-100 bg-white/95 backdrop-blur-md px-5 py-3 shadow-sm"
+>
+    <div class="flex items-center gap-2 text-primary">
+        <div
+            class="flex items-center justify-center w-8 h-8 bg-primary rounded-lg text-white"
+        >
+            <span class="material-symbols-outlined icon-filled !text-lg"
+                >local_taxi</span
+            >
+        </div>
+        <h2 class="text-primary text-base font-bold tracking-tight">
+            SMJ Trans Jogja
+        </h2>
+    </div>
+    <button
+        class="flex items-center justify-center text-primary"
+        id="mobile-custom-menu-btn"
+    >
+        <span class="material-symbols-outlined !text-2xl">menu</span>
+    </button>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div
+    id="mobile-custom-menu"
+    class="fixed inset-0 z-[60] bg-black/50 hidden lg:hidden"
+>
+    <div
+        class="absolute right-0 top-0 bottom-0 w-[80%] bg-white p-6 shadow-xl transform transition-transform translate-x-full"
+        id="mobile-drawer"
+    >
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="font-bold text-lg text-primary">Menu</h3>
+            <button id="close-mobile-menu" class="p-2 text-gray-500">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <nav class="flex flex-col gap-4">
+            <a href="/" class="text-gray-700 font-medium">Beranda</a>
+            <a href="/armada" class="text-primary font-bold">Armada</a>
+            <a href="/booking" class="text-gray-700 font-medium">Booking</a>
+            <a href="/kontak" class="text-gray-700 font-medium">Kontak</a>
+        </nav>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById("mobile-custom-menu-btn");
+    const menu = document.getElementById("mobile-custom-menu");
+    const closeBtn = document.getElementById("close-mobile-menu");
+    const drawer = document.getElementById("mobile-drawer");
+
+    btn?.addEventListener("click", () => {
+        menu?.classList.remove("hidden");
+        setTimeout(() => {
+            drawer?.classList.remove("translate-x-full");
+        }, 10);
+    });
+
+    closeBtn?.addEventListener("click", () => {
+        drawer?.classList.add("translate-x-full");
+        setTimeout(() => {
+            menu?.classList.add("hidden");
+        }, 300);
+    });
+
+    menu?.addEventListener("click", (e) => {
+        if (e.target === menu) {
+            drawer?.classList.add("translate-x-full");
+            setTimeout(() => {
+                menu?.classList.add("hidden");
+            }, 300);
+        }
+    });
+</script>

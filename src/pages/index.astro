@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import HeroWithBooking from "../components/HeroWithBooking.astro";
+import TrustStats from "../components/TrustStats.astro";
+import USPSection from "../components/USPSection.astro";
+import FleetShowcase from "../components/FleetShowcase.astro";
+import Testimonials from "../components/Testimonials.astro";
+import LocationCTA from "../components/LocationCTA.astro";
+import Footer from "../components/Footer.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
+
+const lang = "id";
+export const prerender = true;
+
+const seo = {
+  title: "Sewa Mobil Jogja",
+  description:
+    "Sewa mobil Jogja terpercaya dengan armada terbaru, bersih, dan supir berpengalaman. Lepas kunci atau dengan supir. Harga transparan mulai Rp 300.000/hari. ⭐ 4.9/5 Google Reviews.",
+};
+---
+
+<BaseLayout title={seo.title} description={seo.description} lang={lang}>
+  <Header lang={lang} />
+  <HeroWithBooking lang={lang} />
+  <TrustStats lang={lang} />
+  <USPSection lang={lang} />
+  <FleetShowcase lang={lang} />
+  <Testimonials lang={lang} />
+  <LocationCTA lang={lang} />
+  <Footer lang={lang} />
+  <WhatsAppButton />
+</BaseLayout>

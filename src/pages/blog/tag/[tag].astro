@@ -1,0 +1,151 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Header from "../../../components/Header.astro";
+import Footer from "../../../components/Footer.astro";
+import WhatsAppButton from "../../../components/WhatsAppButton.astro";
+import BlogArticleCard from "../../../components/blog/BlogArticleCard.astro";
+import BlogSidebar from "../../../components/blog/BlogSidebar.astro";
+import { getAllPosts, urlFor } from "../../../lib/sanity";
+
+export async function getStaticPaths() {
+    const allPosts = await getAllPosts();
+
+    // Extract all unique tags
+    // Extract all unique tags
+    const tagsSet = new Set<string>();
+
+    // Default tags from index.astro sidebar
+    const defaultTags = [
+        "#Malioboro",
+        "#Pantai",
+        "#Keluarga",
+        "#Murah",
+        "#LepasKunci",
+    ];
+    defaultTags.forEach((t) => tagsSet.add(t.replace("#", "").toLowerCase()));
+
+    allPosts.forEach((post: any) => {
+        if (post.tags && Array.isArray(post.tags)) {
+            post.tags.forEach((tag: string) => {
+                // Normalize tag: remove #, lowercase
+                const normalizedTag = tag.replace("#", "").toLowerCase();
+                tagsSet.add(normalizedTag);
+            });
+        }
+    });
+
+    return Array.from(tagsSet).map((tag) => {
+        // Filter posts for this tag
+        const filteredPosts = allPosts.filter((post: any) => {
+            if (!post.tags) return false;
+            return post.tags.some(
+                (t: string) => t.replace("#", "").toLowerCase() === tag,
+            );
+        });
+
+        return {
+            params: { tag },
+            props: {
+                tagName: tag,
+                posts: filteredPosts,
+            },
+        };
+    });
+}
+
+const { tag } = Astro.params;
+const { tagName, posts } = Astro.props;
+const lang = "id";
+
+// Transform Sanity data to match component props (Same logic as index.astro)
+const blogPosts = posts.map((post: any) => ({
+    slug: post.slug?.current || post._id,
+    title: post.title,
+    excerpt: post.excerpt || "",
+    image: post.featuredImage
+        ? urlFor(post.featuredImage).width(800).height(500).url()
+        : "",
+    date: post.publishedAt
+        ? new Date(post.publishedAt).toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+          })
+        : "",
+    readTime: post.readTime ? `${post.readTime} min` : "5 min",
+    category: post.category?.title || "Umum",
+}));
+
+// Static sidebar data (copied from index.astro for consistency)
+const categories = [
+    { slug: "wisata-jogja", name: "Wisata Jogja", count: 12 },
+    { slug: "kuliner", name: "Kuliner", count: 8 },
+    { slug: "tips-rental", name: "Tips Rental", count: 5 },
+    { slug: "event", name: "Event", count: 3 },
+    { slug: "otomotif", name: "Otomotif", count: 4 },
+];
+
+const popularTags = [
+    "#Malioboro",
+    "#Pantai",
+    "#Keluarga",
+    "#Murah",
+    "#LepasKunci",
+];
+
+// SEO
+const title = `Arsip Tag: ${tagName} - Blog SMJ Trans Jogja`;
+const description = `Kumpulan artikel blog dengan tag #${tagName}. Tips wisata, sewa mobil, dan panduan liburan di Jogja.`;
+---
+
+<BaseLayout title={title} description={description} lang={lang}>
+    <Header lang={lang} />
+
+    <main class="flex-1 bg-slate-50 dark:bg-slate-900">
+        <!-- Header Section -->
+        <div
+            class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 py-12"
+        >
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <p
+                    class="text-sm font-semibold text-primary uppercase tracking-wider mb-2"
+                >
+                    Tag
+                </p>
+                <h1
+                    class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"
+                >
+                    #{tagName}
+                </h1>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Articles Column -->
+                <div class="lg:col-span-9">
+                    {
+                        blogPosts.length > 0 ? (
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {blogPosts.map((post: any) => (
+                                    <BlogArticleCard post={post} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div class="text-center py-12 text-slate-500">
+                                <p>Tidak ada artikel dengan tag ini.</p>
+                            </div>
+                        )
+                    }
+                </div>
+
+                <!-- Sidebar -->
+                <BlogSidebar categories={categories} tags={popularTags} />
+            </div>
+        </div>
+    </main>
+
+    <Footer lang={lang} />
+    <WhatsAppButton />
+</BaseLayout>

@@ -1,0 +1,138 @@
+---
+/**
+ * Hero Section with Booking Widget
+ * Main hero area with background image, content, and quick booking form
+ */
+import { QuickSearchForm } from "./forms/QuickSearchForm";
+import { Image } from "astro:assets";
+import heroImage from "../../public/images/hero-prambanan.jpg";
+
+interface Props {
+  lang?: "id" | "en";
+}
+
+const { lang = "id" } = Astro.props;
+
+const t =
+  lang === "id"
+    ? {
+        badge: "Rental Mobil #1 di Jogja",
+        headline: "Jelajahi Jogja Lebih",
+        headlineAccent: "Nyaman & Hemat",
+        subtitle:
+          "Nikmati perjalanan tak terlupakan di Yogyakarta dengan armada terbaru, bersih, dan supir berpengalaman. Harga transparan tanpa biaya tersembunyi.",
+        rating: "4.9/5 Google Reviews",
+        support: "24/7 Support",
+        bookingTitle: "Cari Ketersediaan Mobil",
+      }
+    : {
+        badge: "#1 Car Rental in Jogja",
+        headline: "Explore Jogja More",
+        headlineAccent: "Comfortable & Affordable",
+        subtitle:
+          "Enjoy an unforgettable journey in Yogyakarta with our newest fleet, clean vehicles, and experienced drivers. Transparent pricing with no hidden fees.",
+        rating: "4.9/5 Google Reviews",
+        support: "24/7 Support",
+        bookingTitle: "Check Car Availability",
+      };
+---
+
+<section
+  class="relative w-full min-h-[600px] flex items-center justify-center bg-[#1f3b61] overflow-hidden"
+>
+  <!-- Background Image with Overlay -->
+  <div class="absolute inset-0 z-0">
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-[#1f3b61]/95 to-[#1f3b61]/60 z-10"
+    >
+    </div>
+    <Image
+      src={heroImage}
+      alt="Prambanan Temple Background"
+      class="w-full h-full object-cover object-center"
+      loading="eager"
+      fetchpriority="high"
+      widths={[640, 768, 1024, 1280, 1920]}
+      sizes="(max-width: 768px) 100vw, 100vw"
+    />
+  </div>
+
+  <div class="relative z-20 w-full container-main py-12 pt-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <!-- Hero Content -->
+      <div class="lg:col-span-7 flex flex-col gap-6 text-white">
+        <!-- Trust Badge -->
+        <div
+          class="inline-flex items-center gap-1.5 bg-white/10 w-fit mx-auto lg:mx-0 px-2.5 py-1 rounded-full border border-white/20 backdrop-blur-sm"
+        >
+          <span class="material-symbols-outlined text-[#d97706] text-xs filled"
+            >verified</span
+          >
+          <span class="text-[10px] font-medium tracking-wide uppercase"
+            >{t.badge}</span
+          >
+        </div>
+
+        <!-- Headline -->
+        <!-- Headline -->
+        <h1
+          class="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-center lg:text-left"
+        >
+          {t.headline}
+          <br class="block lg:hidden" />
+          <span class="text-[#d97706]">{t.headlineAccent}</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <!-- Subtitle -->
+        <p
+          class="text-sm text-slate-200 max-w-xs mx-auto lg:mx-0 leading-relaxed text-center lg:text-left lg:text-lg lg:max-w-xl"
+        >
+          {t.subtitle}
+        </p>
+
+        <!-- Trust Badges (Hero) -->
+        <div
+          class="hidden lg:flex flex-wrap gap-6 mt-4 pt-6 border-t border-white/10"
+        >
+          <div class="flex items-center gap-3">
+            <div class="flex">
+              {
+                [1, 2, 3, 4, 5].map(() => (
+                  <span class="material-symbols-outlined text-[#d97706] text-xl filled">
+                    star
+                  </span>
+                ))
+              }
+            </div>
+            <span class="text-sm font-medium">{t.rating}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#d97706] text-xl"
+              >support_agent</span
+            >
+            <span class="text-sm font-medium">{t.support}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Widget -->
+      <div class="lg:col-span-5 w-full">
+        <div
+          class="bg-white p-4 rounded-xl shadow-xl shadow-black/10 border border-slate-100 dark:bg-[#1f2937] dark:border-slate-700"
+        >
+          <h3
+            class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2 border-b border-slate-100 pb-2"
+          >
+            <span class="material-symbols-outlined text-[#1f3b61] text-lg"
+              >calendar_clock</span
+            >
+            {t.bookingTitle}
+          </h3>
+
+          <QuickSearchForm lang={lang} client:load />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

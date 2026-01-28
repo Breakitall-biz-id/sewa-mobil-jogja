@@ -1,0 +1,89 @@
+---
+/**
+ * USP Section (Why Choose Us)
+ * Displays key selling points in card format
+ */
+interface Props {
+  lang?: 'id' | 'en';
+}
+
+const { lang = 'id' } = Astro.props;
+
+const t = lang === 'id' ? {
+  eyebrow: 'Kenapa Memilih Kami?',
+  title: 'Partner Perjalanan Terbaik Anda',
+  subtitle: 'Kami berkomitmen memberikan pengalaman sewa mobil terbaik di Jogja dengan standar pelayanan tinggi.',
+} : {
+  eyebrow: 'Why Choose Us?',
+  title: 'Your Best Travel Partner',
+  subtitle: 'We are committed to providing the best car rental experience in Jogja with high service standards.',
+};
+
+const uspItems = lang === 'id' ? [
+  {
+    icon: 'savings',
+    title: 'Harga Termurah',
+    description: 'Penawaran harga terbaik dan kompetitif untuk setiap jenis mobil tanpa mengurangi kualitas.',
+  },
+  {
+    icon: 'clean_hands',
+    title: 'Unit Bersih & Wangi',
+    description: 'Setiap armada selalu dicuci dan disterilkan sebelum digunakan pelanggan untuk kenyamanan.',
+  },
+  {
+    icon: 'sentiment_satisfied',
+    title: 'Supir Ramah',
+    description: 'Driver kami profesional, ramah, dan sangat hafal rute wisata di Yogyakarta.',
+  },
+  {
+    icon: 'verified',
+    title: 'Syarat Mudah',
+    description: 'Proses booking cepat dengan persyaratan sewa lepas kunci yang tidak ribet.',
+  },
+] : [
+  {
+    icon: 'savings',
+    title: 'Best Prices',
+    description: 'Competitive pricing for all car types without compromising on quality.',
+  },
+  {
+    icon: 'clean_hands',
+    title: 'Clean & Fresh',
+    description: 'Every vehicle is thoroughly cleaned and sanitized before each rental.',
+  },
+  {
+    icon: 'sentiment_satisfied',
+    title: 'Friendly Drivers',
+    description: 'Our professional drivers are friendly and know all tourist routes in Yogyakarta.',
+  },
+  {
+    icon: 'verified',
+    title: 'Easy Process',
+    description: 'Quick booking process with simple requirements for self-drive rentals.',
+  },
+];
+---
+
+<section class="section-padding bg-[#f6f7f8]">
+  <div class="container-main">
+    <!-- Section Header -->
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <span class="text-[#d97706] font-bold text-sm tracking-wider uppercase mb-2 block">{t.eyebrow}</span>
+      <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">{t.title}</h2>
+      <p class="text-slate-500">{t.subtitle}</p>
+    </div>
+    
+    <!-- USP Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {uspItems.map((item) => (
+        <article class="bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition-shadow border border-slate-100 group">
+          <div class="w-14 h-14 bg-blue-50 rounded-lg flex items-center justify-center text-[#1f3b61] mb-6 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-3xl">{item.icon}</span>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 mb-3">{item.title}</h3>
+          <p class="text-slate-500 text-sm leading-relaxed">{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

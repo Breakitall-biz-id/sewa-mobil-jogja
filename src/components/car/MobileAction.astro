@@ -1,0 +1,18 @@
+---
+import { MobileBookingDrawer } from "./MobileBookingDrawer";
+
+interface Props {
+    price?: number;
+    priceWithDriver?: number;
+    carName: string;
+}
+
+const { price, priceWithDriver, carName } = Astro.props;
+---
+
+<MobileBookingDrawer
+    carName={carName}
+    pricePerDay={price || 0}
+    priceWithDriver={priceWithDriver}
+    client:load
+/>

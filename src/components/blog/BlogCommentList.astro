@@ -1,0 +1,107 @@
+---
+/**
+ * Blog Comment List Component
+ * Displays comments and replies
+ */
+interface Comment {
+    id: string
+    author: {
+        name: string
+        avatar?: string
+        isAdmin?: boolean
+    }
+    content: string
+    date: string
+    replies?: Comment[]
+}
+
+interface Props {
+    comments: Comment[]
+}
+
+const { comments } = Astro.props
+---
+
+<div class="space-y-8">
+    {comments.map((comment) => (
+        <div class="flex gap-4">
+            <!-- Avatar -->
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-200 overflow-hidden">
+                {comment.author.isAdmin ? (
+                    <div class="w-full h-full bg-primary text-white flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xs">support_agent</span>
+                    </div>
+                ) : comment.author.avatar ? (
+                    <img 
+                        src={comment.author.avatar} 
+                        alt={comment.author.name}
+                        class="w-full h-full object-cover"
+                        loading="lazy"
+                    />
+                ) : (
+                    <div class="w-full h-full flex items-center justify-center bg-slate-300 text-slate-600 font-bold">
+                        {comment.author.name.charAt(0)}
+                    </div>
+                )}
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1">
+                <div class="flex items-baseline gap-2 mb-1">
+                    <h5 class={`font-bold ${comment.author.isAdmin ? 'text-primary dark:text-white text-sm' : 'text-slate-900 dark:text-white'}`}>
+                        {comment.author.isAdmin ? 'Admin SMJ' : comment.author.name}
+                    </h5>
+                    <span class="text-xs text-slate-500">{comment.date}</span>
+                </div>
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                    {comment.content}
+                </p>
+                
+                {!comment.author.isAdmin && (
+                    <button class="text-xs text-primary font-semibold mt-2 hover:underline">
+                        Balas
+                    </button>
+                )}
+                
+                <!-- Replies -->
+                {comment.replies && comment.replies.length > 0 && (
+                    <div class="mt-4 ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-4">
+                        {comment.replies.map((reply) => (
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden">
+                                    {reply.author.isAdmin ? (
+                                        <div class="w-full h-full bg-primary text-white flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-xs">support_agent</span>
+                                        </div>
+                                    ) : reply.author.avatar ? (
+                                        <img 
+                                            src={reply.author.avatar} 
+                                            alt={reply.author.name}
+                                            class="w-full h-full object-cover"
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <div class="w-full h-full flex items-center justify-center bg-slate-200 text-slate-600 font-bold text-xs">
+                                            {reply.author.name.charAt(0)}
+                                        </div>
+                                    )}
+                                </div>
+                                <div>
+                                    <div class="flex items-baseline gap-2 mb-1">
+                                        <h5 class={`font-bold text-sm ${reply.author.isAdmin ? 'text-primary dark:text-white' : 'text-slate-900 dark:text-white'}`}>
+                                            {reply.author.isAdmin ? 'Admin SMJ' : reply.author.name}
+                                        </h5>
+                                        <span class="text-xs text-slate-500">{reply.date}</span>
+                                    </div>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">
+                                        {reply.content}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    ))}
+</div>

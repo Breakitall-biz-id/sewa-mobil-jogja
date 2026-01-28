@@ -1,0 +1,209 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ArmadaCard from "../../components/ArmadaCard.astro";
+import WhatsAppButton from "../../components/WhatsAppButton.astro";
+import { getAllCars, urlFor } from "../../lib/sanity";
+import type { SanityCar } from "../../types";
+
+const lang = "id";
+
+const seo = {
+  title: "Armada Kami",
+  description:
+    "Pilihan armada terbaik untuk perjalanan Anda di Yogyakarta. Innova Reborn, Avanza, Brio, Alphard, HiAce, dan Elf dengan kondisi prima dan harga terjangkau.",
+};
+
+const t = {
+  title: "Pilihan Armada Terbaik",
+  subtitle:
+    "Temukan kendaraan yang sempurna untuk perjalanan Anda di Yogyakarta. Kami menjamin kebersihan, kenyamanan, dan performa mesin yang prima.",
+  loadMore: "Tampilkan Lebih Banyak",
+};
+
+const categories = [
+  { id: "all", label: "Semua", active: true },
+  { id: "city-car", label: "City Car", active: false },
+  { id: "mpv", label: "MPV", active: false },
+  { id: "premium", label: "Premium", active: false },
+  { id: "minibus", label: "Minibus", active: false },
+];
+
+const sanityCars = await getAllCars();
+
+const cars = sanityCars.map((car) => ({
+  id: car.slug?.current || car._id,
+  name: car.name,
+  year: new Date().getFullYear(),
+  transmission: "Matic" as const,
+  seats: car.capacity || 5,
+  luggage: car.luggage || 1,
+  features: car.features || [],
+  price: car.pricePerDay || 0,
+  image: car.image ? urlFor(car.image).width(600).height(450).url() : "",
+  available: true,
+  category: car.category || "mpv",
+}));
+---
+
+<BaseLayout title={seo.title} description={seo.description} lang={lang}>
+  <Header lang={lang} />
+
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+    <!-- Page Heading -->
+    <div class="flex flex-col gap-4 mb-8 md:mb-12 text-center md:text-left">
+      <h1
+        class="text-[#1f3b61] text-3xl md:text-4xl font-black leading-tight tracking-tight"
+      >
+        {t.title}
+      </h1>
+      <p
+        class="text-[#6a7381] text-base md:text-lg font-normal leading-relaxed max-w-3xl"
+      >
+        {t.subtitle}
+      </p>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="mb-10 overflow-x-auto pb-2">
+      <div class="flex gap-3 min-w-max md:justify-start" id="category-filters">
+        {
+          categories.map((cat) => (
+            <button
+              class={`group flex h-10 items-center justify-center gap-x-2 rounded-full px-6 transition-all ${
+                cat.active
+                  ? "bg-[#1f3b61] hover:shadow-lg"
+                  : "bg-white border border-[#e5e7eb] hover:bg-gray-50 hover:border-[#1f3b61]/30"
+              }`}
+              data-category={cat.id}
+            >
+              <p
+                class={`text-sm font-medium leading-normal ${
+                  cat.active
+                    ? "text-white font-bold"
+                    : "text-[#6a7381] group-hover:text-[#1f3b61]"
+                }`}
+              >
+                {cat.label}
+              </p>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Vehicle Grid -->
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+      id="car-grid"
+    >
+      {
+        cars.map((car, index) => (
+          <ArmadaCard
+            id={car.id}
+            name={car.name}
+            year={car.year}
+            transmission={car.transmission}
+            seats={car.seats}
+            luggage={car.luggage}
+            features={car.features}
+            price={car.price}
+            image={car.image}
+            available={car.available}
+            lang={lang}
+            category={car.category}
+            loading={index < 6 ? "eager" : "lazy"}
+          />
+        ))
+      }
+    </div>
+
+    <!-- Load More -->
+    <div class="mt-12 flex justify-center">
+      <button
+        class="flex items-center justify-center gap-2 text-[#1f3b61] font-bold text-sm hover:underline"
+      >
+        {t.loadMore}
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+  <WhatsAppButton />
+</BaseLayout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    initFilters();
+  });
+
+  // Also run on initial load if view transitions aren't used or haven't fired yet
+  if (
+    document.readyState === "complete" ||
+    document.readyState === "interactive"
+  ) {
+    initFilters();
+  } else {
+    document.addEventListener("DOMContentLoaded", initFilters);
+  }
+
+  function initFilters() {
+    const buttons = document.querySelectorAll("#category-filters button");
+    const cards = document.querySelectorAll("#car-grid article");
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        // 1. Update Buttons State
+        buttons.forEach((b) => {
+          b.classList.remove("bg-[#1f3b61]", "hover:shadow-lg");
+          b.classList.add(
+            "bg-white",
+            "border",
+            "border-[#e5e7eb]",
+            "hover:bg-gray-50",
+          );
+
+          const text = b.querySelector("p");
+          if (text) {
+            text.classList.remove("text-white", "font-bold");
+            text.classList.add("text-[#6a7381]", "group-hover:text-[#1f3b61]");
+          }
+        });
+
+        // Activate clicked button
+        btn.classList.remove(
+          "bg-white",
+          "border",
+          "border-[#e5e7eb]",
+          "hover:bg-gray-50",
+        );
+        btn.classList.add("bg-[#1f3b61]", "hover:shadow-lg");
+
+        const text = btn.querySelector("p");
+        if (text) {
+          text.classList.remove("text-[#6a7381]", "group-hover:text-[#1f3b61]");
+          text.classList.add("text-white", "font-bold");
+        }
+
+        // 2. Filter Cards
+        const category = btn.getAttribute("data-category");
+
+        cards.forEach((card) => {
+          const cardCategory = card.getAttribute("data-category");
+          const element = card as HTMLElement; // Cast to HTMLElement to access style
+
+          if (category === "all" || cardCategory === category) {
+            element.style.display = "flex";
+            // Optional: Add simple fade-in
+            element.style.opacity = "0";
+            setTimeout(() => (element.style.opacity = "1"), 50);
+          } else {
+            element.style.display = "none";
+          }
+        });
+      });
+    });
+  }
+</script>

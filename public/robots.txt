@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /_astro/
+
+# Sitemap reference
+Sitemap: https://sewamobiljogjaku.id/sitemap-index.xml

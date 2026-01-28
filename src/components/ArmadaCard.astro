@@ -1,0 +1,181 @@
+---
+/**
+ * ArmadaCard Component
+ * Car card for the Armada (Fleet) listing page
+ */
+import { Image } from "astro:assets";
+interface Props {
+  id: string;
+  name: string;
+  year: number;
+  transmission: "Matic" | "Manual";
+  seats: number;
+  luggage: number | string;
+  features: string[];
+  price: number;
+  image: string;
+  available: boolean;
+  category?: string;
+  lang?: "id" | "en";
+  loading?: "eager" | "lazy";
+}
+
+const {
+  id,
+  name,
+  year,
+  transmission,
+  seats,
+  luggage,
+  features,
+  price,
+  image,
+  available,
+  category,
+  lang = "id",
+  loading = "lazy",
+} = Astro.props;
+
+const t =
+  lang === "id"
+    ? {
+        available: "Tersedia",
+        rented: "Tersewa",
+        startFrom: "Mulai dari",
+        perDay: "/ hari",
+        viewDetail: "Lihat Detail",
+        order: "Pesan",
+        full: "Penuh",
+        people: "Orang",
+        suitcase: "Koper",
+      }
+    : {
+        available: "Available",
+        rented: "Rented",
+        startFrom: "Starting from",
+        perDay: "/ day",
+        viewDetail: "View Detail",
+        order: "Book Now",
+        full: "Full",
+        people: "People",
+        suitcase: "Suitcase",
+      };
+
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat("id-ID").format(price);
+};
+
+const whatsappMessage = encodeURIComponent(
+  `Halo admin, saya ingin booking ${name} untuk tanggal...`,
+);
+const whatsappUrl = `https://api.whatsapp.com/send?phone=628812725610&text=${whatsappMessage}`;
+---
+
+<article
+  data-category={category}
+  class="flex flex-col bg-white rounded-xl shadow-sm border border-[#f1f2f4] overflow-hidden hover:shadow-md transition-shadow group h-full"
+>
+  <!-- Car Image -->
+  <div class="relative w-full aspect-[4/3] overflow-hidden">
+    <Image
+      src={image}
+      alt={name || "Sewa Mobil Jogja - Armada"}
+      width={600}
+      height={450}
+      loading={loading}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+    />
+    <div
+      class={`absolute top-3 right-3 text-xs font-bold px-3 py-1 rounded-full border ${
+        available
+          ? "bg-green-100 text-green-700 border-green-200"
+          : "bg-red-100 text-red-700 border-red-200"
+      }`}
+    >
+      {available ? t.available : t.rented}
+    </div>
+  </div>
+
+  <!-- Car Info -->
+  <div class="flex flex-col p-5 gap-4 flex-1">
+    <div>
+      <h3 class="text-[#1f3b61] text-xl font-bold leading-tight">{name}</h3>
+      <p class="text-xs text-[#6a7381] mt-1 font-medium">
+        Tahun {year} • {transmission}
+      </p>
+    </div>
+
+    <!-- Specs -->
+    <div class="flex items-center gap-4 text-[#6a7381]">
+      <div class="flex items-center gap-1.5" title="Kapasitas Penumpang">
+        <span class="material-symbols-outlined text-[#1f3b61] text-[18px]"
+          >group</span
+        >
+        <span class="text-sm">{seats} {t.people}</span>
+      </div>
+      <div class="flex items-center gap-1.5" title="Kapasitas Bagasi">
+        <span class="material-symbols-outlined text-[#1f3b61] text-[18px]"
+          >luggage</span
+        >
+        <span class="text-sm">{luggage} {t.suitcase}</span>
+      </div>
+    </div>
+
+    <!-- Features Chips -->
+    <div class="flex flex-wrap gap-2">
+      {
+        features
+          .slice(0, 2)
+          .map((feature) => (
+            <span class="inline-flex items-center px-2 py-1 rounded bg-[#f6f7f8] text-[#6a7381] text-xs font-medium">
+              {feature}
+            </span>
+          ))
+      }
+    </div>
+
+    <div class="border-t border-dashed border-gray-200 my-1"></div>
+
+    <!-- Price & Actions -->
+    <div class="mt-auto flex flex-col gap-4">
+      <div>
+        <p class="text-xs text-[#6a7381] mb-0.5">{t.startFrom}</p>
+        <p class="text-2xl font-bold text-[#1f3b61]">
+          Rp {formatPrice(price)}
+          <span class="text-sm font-normal text-[#6a7381]">{t.perDay}</span>
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <a
+          href={`/armada/${id}`}
+          class="flex items-center justify-center h-10 rounded-lg border border-[#1f3b61] text-[#1f3b61] text-sm font-bold hover:bg-[#1f3b61]/5 transition-colors"
+        >
+          {t.viewDetail}
+        </a>
+
+        {
+          available ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center gap-2 h-10 rounded-lg bg-[#FFB703] text-[#1f3b61] text-sm font-bold hover:bg-[#FFB703]/90 transition-colors shadow-sm"
+            >
+              <span class="material-symbols-outlined text-[18px]">chat</span>
+              {t.order}
+            </a>
+          ) : (
+            <button
+              disabled
+              class="flex items-center justify-center gap-2 h-10 rounded-lg bg-gray-200 text-gray-500 cursor-not-allowed text-sm font-bold"
+            >
+              <span class="material-symbols-outlined text-[18px]">block</span>
+              {t.full}
+            </button>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</article>
